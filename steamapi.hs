@@ -9,8 +9,8 @@ import Data.List
 -- SteamID (Simon)			:: 76561197979971024
 
 -- Data types --
-type SteamID = [Char]
-type AppID = [Char]
+type SteamID = Integer
+type AppID = Integer
 
 -- BASE SETTINGS --
 key 	= "F54C9824025C1E667C45B6887D7765B0" -- Steam API Key (Simon/slovgren.com), can be found/created @ http://steamcommunity.com/dev/apikey
@@ -70,9 +70,69 @@ code url = do
 	getResponseCode resp
 
 
+{-
+	printRequestBody string
+
+	PURPOSE:
+		Print the request body to console/terminal with correct formatting.
+
+	PRE:
+		* TRUE
+
+	POST:
+		* TRUE
+
+	EXAMPLES:
+		---
+-}
+printRequestBody :: IO String -> IO ()
+printRequestBody iostr = do
+	str <- iostr
+	putStr (str)
+
+
+{-
+	concatIDs ids
+
+	PURPOSE:
+		Concatinate ids and return as comma separated strings.
+
+	PRE:
+		* TRUE
+
+	POST:
+		* TRUE
+
+	EXAMPLES:
+		concatIDs [123456789, 2345678, 34567890] == "123456789,2345678,34567890"
+-}
+concatIDs :: [Integer] -> String
+concatIDs [] = []
+concatIDs (x:xs) = (show x) ++ ',' : concatIDs xs
+
 
 -- Specific API calls --
 -- IPlayerService -- PLAYERINFO -- 
+-- http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=F54C9824025C1E667C45B6887D7765B0&vanityurl=erikun
+{-
+	getSteamIdFromVanityURL vanityname
+
+	PURPOSE:
+		Fetch player steamid using vanity name (custom name/url).
+
+	PRE:
+		* TRUE
+
+	POST:
+		* Returns request body in form of a IO String containing JSON-formatted/serialized data
+
+	EXAMPLES:
+		---
+
+-}
+getSteamIdFromVanityURL :: String -> IO String
+getSteamIdFromVanityURL vanity = get (apiBase ++ "/ISteamUser/ResolveVanityURL/v0001/?key=" ++ key ++ "&vanityurl=" ++ vanity)
+
 
 {-
 	getPlayerSummaries steamIDs
@@ -92,7 +152,7 @@ code url = do
 
 -}
 getPlayerSummaries :: [SteamID] -> IO String
-getPlayerSummaries ids = get (apiBase ++ "/ISteamUser/GetPlayerSummaries/v0002/?key=" ++ key ++ "&steamids=" ++ (intercalate "," ids))
+getPlayerSummaries ids = get (apiBase ++ "/ISteamUser/GetPlayerSummaries/v0002/?key=" ++ key ++ "&steamids=" ++ (concatIDs ids))
 
 {-
 	getFriendList steamID
@@ -111,7 +171,7 @@ getPlayerSummaries ids = get (apiBase ++ "/ISteamUser/GetPlayerSummaries/v0002/?
 
 -}
 getFriendList :: SteamID -> IO String
-getFriendList id = get (apiBase ++ "/ISteamUser/GetFriendList/v0001/?key=" ++ key ++ "&relationship=friend&steamid=" ++ id)
+getFriendList id = get (apiBase ++ "/ISteamUser/GetFriendList/v0001/?key=" ++ key ++ "&relationship=friend&steamid=" ++ show(id))
 
 {-
 	getOwnedGames steamID
@@ -130,7 +190,7 @@ getFriendList id = get (apiBase ++ "/ISteamUser/GetFriendList/v0001/?key=" ++ ke
 
 -}
 getOwnedGames :: SteamID -> IO String
-getOwnedGames id = get (apiBase ++ "/IPlayerService/GetOwnedGames/v0001/?key=" ++ key ++ "&steamid=" ++ id)
+getOwnedGames id = get (apiBase ++ "/IPlayerService/GetOwnedGames/v0001/?key=" ++ key ++ "&steamid=" ++ show(id))
 
 {-
 	getPlayerAchievements steamID appID
@@ -149,7 +209,7 @@ getOwnedGames id = get (apiBase ++ "/IPlayerService/GetOwnedGames/v0001/?key=" +
 
 -}
 getPlayerAchievements :: SteamID -> AppID -> IO String
-getPlayerAchievements id appid = get (apiBase ++ "/ISteamUserStats/GetPlayerAchievements/v0001/?key=" ++ key ++ "&appid=" ++ appid ++ "&steamid=" ++ id)
+getPlayerAchievements id appid = get (apiBase ++ "/ISteamUserStats/GetPlayerAchievements/v0001/?key=" ++ key ++ "&appid=" ++ show(appid) ++ "&steamid=" ++ show(id))
 
 {-
 	getUserStatsForGame steamID appID
@@ -168,7 +228,7 @@ getPlayerAchievements id appid = get (apiBase ++ "/ISteamUserStats/GetPlayerAchi
 
 -}
 getUserStatsForGame :: SteamID -> AppID -> IO String
-getUserStatsForGame id appid = get (apiBase ++ "/ISteamUserStats/GetUserStatsForGame/v0002/?key=" ++ key ++ "&appid=" ++ appid ++ "&steamid=" ++ id)
+getUserStatsForGame id appid = get (apiBase ++ "/ISteamUserStats/GetUserStatsForGame/v0002/?key=" ++ key ++ "&appid=" ++ show(appid) ++ "&steamid=" ++ show(id))
 
 {-
 	getRecentlyPlayedGames steamID
@@ -187,7 +247,7 @@ getUserStatsForGame id appid = get (apiBase ++ "/ISteamUserStats/GetUserStatsFor
 
 -}
 getRecentlyPlayedGames :: SteamID -> IO String
-getRecentlyPlayedGames id = get (apiBase ++ "/IPlayerService/GetRecentlyPlayedGames/v0001/?key=" ++ key ++ "&steamid=" ++ id)
+getRecentlyPlayedGames id = get (apiBase ++ "/IPlayerService/GetRecentlyPlayedGames/v0001/?key=" ++ key ++ "&steamid=" ++ show(id))
 
 {-
 	getPlayerBans steamIDs
@@ -207,7 +267,7 @@ getRecentlyPlayedGames id = get (apiBase ++ "/IPlayerService/GetRecentlyPlayedGa
 
 -}
 getPlayerBans :: [SteamID] -> IO String
-getPlayerBans ids = get (apiBase ++ "/ISteamUser/GetPlayerBans/v1/?key=" ++ key ++ "&steamids=" ++ (intercalate "," ids))
+getPlayerBans ids = get (apiBase ++ "/ISteamUser/GetPlayerBans/v1/?key=" ++ key ++ "&steamids=" ++ (concatIDs ids))
 
 
 -- ISteamApps -- App Info--
@@ -247,4 +307,4 @@ getSteamApps = get (apiBase ++ "/ISteamApps/GetAppList/v2")
 
 -}
 getAppSchema :: AppID -> IO String
-getAppSchema appid = get (apiBase ++ "/ISteamUserStats/GetSchemaForGame/v2/?key=" ++ key ++ "&appid=" ++ appid)
+getAppSchema appid = get (apiBase ++ "/ISteamUserStats/GetSchemaForGame/v2/?key=" ++ key ++ "&appid=" ++ show(appid))
