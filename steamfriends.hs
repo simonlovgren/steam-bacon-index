@@ -10,7 +10,7 @@
           http://blog.raynes.me/blog/2012/11/27/easy-json-parsing-in-haskell-with-aeson/
 -}
 
-module SteamFriends (getIDs) where
+module SteamFriends (getIDs, SteamID) where
 
 import Control.Monad
 import Control.Applicative ((<$>),(<*>))
@@ -142,7 +142,7 @@ makeListOfIDs Nothing = []
         makeListOfIDs Just (FriendsList {friendslist = (Friends {friends = [Friend {steamid = "76561197965528292", relationship = "friend", friend_since = 1223307109}]})}) = [76561197965528292]
 
 -}
-getIDs :: SteamID -> IO [Integer]
+getIDs :: SteamID -> IO [SteamID]
 getIDs id = do
     raw <- SteamAPI.getFriendList id
     -- putStrLn raw
