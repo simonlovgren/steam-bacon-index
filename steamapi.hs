@@ -308,3 +308,9 @@ getSteamApps = get (apiBase ++ "/ISteamApps/GetAppList/v2")
 -}
 getAppSchema :: AppID -> IO String
 getAppSchema appid = get (apiBase ++ "/ISteamUserStats/GetSchemaForGame/v2/?key=" ++ key ++ "&appid=" ++ show(appid))
+
+
+
+{-
+	TODO: Add test cases
+-}
