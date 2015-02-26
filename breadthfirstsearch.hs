@@ -1,6 +1,8 @@
 import SteamAPI
 import FifoQueue
 import IDSearchTree
+import SteamFriends
+import Debug.Trace
 
 test :: IO Integer
 test = return(76561198028357851)
@@ -9,7 +11,7 @@ test = return(76561198028357851)
 test1 = do
   testid <- test
   let q = queue (testid,[]) EmptyQ
-  breadthFirstSearch q 1 Empty
+  breadthFirstSearch q 76561198000124224 Empty
 
 --Check if queue empty
 test2 = do
@@ -21,10 +23,10 @@ test2 = do
 test3 =  do
   testid <- test
   let q = queue (testid,[]) EmptyQ
-  breadthFirstSearch q 12 Empty
+  breadthFirstSearch q 76561197966095937 Empty
 
 --testing checkAndAdd
-test4 = checkAndAdd EmptyQ [] Empty [1,2,3]
+test4 = checkAndAdd EmptyQ [] Empty [76561197989194839,76561198000124224,76561198043343260]
 
 {-
 
@@ -41,9 +43,10 @@ breadthFirstSearch q goal visited = do
     else do
       let (entry, queue) = dequeue q
           (steamid, route) = (fst entry, snd entry)
-      aList <- parseryparsery $ getFriendList steamid
+      aList <- getIDs steamid
+      print steamid
       if not(checkGoalReached aList goal) then do
-        let (newQueue, visitedUpdated) = checkAndAdd q (steamid:route) visited aList
+        let (newQueue, visitedUpdated) = checkAndAdd queue (steamid:route) visited aList
         breadthFirstSearch newQueue goal visitedUpdated
         else do
         putStrLn "I found it!!"
