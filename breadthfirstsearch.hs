@@ -23,7 +23,7 @@ test2 = do
 test3 =  do
   testid <- test
   let q = queue (testid,[]) EmptyQ
-  breadthFirstSearch q 76561197966095937 Empty
+  breadthFirstSearch q 76561197999847293 Empty
 
 --testing checkAndAdd
 test4 = checkAndAdd EmptyQ [] Empty [76561197989194839,76561198000124224,76561198043343260]
@@ -44,12 +44,12 @@ breadthFirstSearch q goal visited = do
       let (entry, queue) = dequeue q
           (steamid, route) = (fst entry, snd entry)
       aList <- getIDs steamid
-      print steamid
+      putStrLn (show steamid ++ " has " ++ show(length aList) ++ " friends")
       if not(checkGoalReached aList goal) then do
         let (newQueue, visitedUpdated) = checkAndAdd queue (steamid:route) visited aList
         breadthFirstSearch newQueue goal visitedUpdated
         else do
-        putStrLn "I found it!!"
+        putStrLn ("I found it!! " ++ show (length route) ++ " people between the ids")
 
 {-
 
