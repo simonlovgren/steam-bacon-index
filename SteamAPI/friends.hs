@@ -11,7 +11,7 @@
     TODO: Review document, restructure and document
 -}
 
-module SteamAPI.Friends (getIDList, getRawList, Friends, Friend) where
+module SteamAPI.Friends (getIDList, getRawList) where
 
 import           Control.Applicative ((<$>),(<*>))
 import           Control.Monad

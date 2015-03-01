@@ -13,13 +13,14 @@
 -}
 module Steam where
 
-import SteamAPI.Friends
+import qualified SteamAPI.Friends
+import qualified SteamAPI.Summaries
 {-
 	
 	TODO: Add import of all new interfaces here
 	
-	import SteamAPI.ResolveVanity
-	import SteamAPI.Player
+	import qualified SteamAPI.ResolveVanity
+	import qualified SteamAPI.Player
 
 	etc. etc.
 
@@ -106,6 +107,27 @@ friendsIDs id = do
 
 
 -- ################### PLAYER ################### --
+{-
+	playersExist list
+
+	PURPOSE:
+		Return player summaries for suppied ID:s 
+
+	PRE:
+		True
+
+	POST:
+		Not yet determined, but probably IO (Maybe Integer)
+	
+	SIDE EFFECTS:
+		--
+
+	Examples:
+		--
+-}
+playersExist :: [SteamID] -> IO Bool
+playersExist list = SteamAPI.Summaries.playersExist list
+
 {-
 	playerSummaries list
 
