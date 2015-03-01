@@ -17,7 +17,7 @@ import           Control.Applicative ((<$>),(<*>))
 import           Control.Monad
 import           Text.JSON
 
--- Import Steam API
+-- Import Steam Request
 import qualified SteamAPI.Requests (getFriendList)
 
 {-
@@ -25,7 +25,8 @@ import qualified SteamAPI.Requests (getFriendList)
         * Represents the response wrapper used by the steam API
 
     REPRESENTATION INVARIANT:
-        TRUE
+        * May only be used within this module due to
+          otherwise clashing (automatically created)
 -}
 data FriendsList =
     FriendsList {
@@ -61,10 +62,19 @@ data Friend =
     	friend_since :: Integer
     } deriving (Show)
 
-
+{-
+    REPRESENTATION CONVENTION:
+        * Represents key-value structure of varying data types associated with a string identifier
+    REPRESENTATION INVARIANT:
+        * TRUE
+-}
+data KeyVal = KVStr String String | KVInt String Integer deriving (Eq, Show)
+-- data KeyVal = KeyVal String KeyVal | KVStr String | KVInt Integer deriving (Eq, Show)  -- RECURSIVE VERSION
 {-
     REPRESENTATION CONVENTION:
         * Represents a "64-bit" integer steam ID
+    REPRESENTATION INVARIANT:
+        * TRUE
 -}
 type SteamID = Integer
 
@@ -142,8 +152,14 @@ makeListOfIDs (Error _) = []
     
     TODO: Re-make to return [[(String, ??)]] to be able to export without clashing automatically created record-style functions.
 -}
-extractFriends :: Result FriendsList -> Maybe [Friend]
-extractFriends (Ok x) = Just (friends (friendslist(x)))
+extractFriends :: Result FriendsList -> Maybe [[KeyVal]]
+extractFriends (Ok x) =
+    let
+        extractFriends' :: [Friend] -> [[KeyVal]]
+        extractFriends' [] = []
+        extractFriends' (friend:xs) = [KVInt "steamid" (read (steamid friend)), KVStr "relationship" (relationship friend), KVInt "friend_since" (friend_since friend)] : extractFriends' xs
+    in
+        Just $ extractFriends' (friends (friendslist(x)))
 extractFriends (Error _) = Nothing
 
 
@@ -186,7 +202,7 @@ getIDList id = do
         ---
 
 -}
-getRawList :: SteamID -> IO (Maybe [Friend])
+getRawList :: SteamID -> IO (Maybe [[KeyVal]])
 getRawList id = do
     raw <- SteamAPI.Requests.getFriendList id
     -- putStrLn raw

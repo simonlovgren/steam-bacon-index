@@ -11,7 +11,7 @@
     NOTE: Under construction
     TODO: Add exports when file is done?
 -}
-module SteamAPI.Interface where
+module Steam where
 
 import SteamAPI.Friends
 {-

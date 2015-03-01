@@ -152,7 +152,7 @@ concatIDs (x:xs) = (show x) ++ ',' : concatIDs xs
 		* Returns request body in form of a IO String containing JSON-formatted/serialized data
 
 	EXAMPLES:
-		---
+		getSteamIdFromVanityURL "erikun" == "{\n\t"response": {\n\t\t"steamid": "76561198028357851",\n\t\t"success": 1\n\t}\n}"
 
 -}
 getSteamIdFromVanityURL :: String -> IO String
