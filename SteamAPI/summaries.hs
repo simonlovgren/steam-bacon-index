@@ -20,6 +20,9 @@ import           Text.JSON
 -- Import Steam Request
 import qualified SteamAPI.Requests (getPlayerSummaries)
 
+-- import KeyVal
+import KeyVal
+
 {-
     REPRESENTATION CONVENTION:
         * Represents the response wrapper used by the steam API
@@ -65,15 +68,6 @@ data Player =
         -- loccountrycode :: String,      -- not allways available, may break code
         -- locstatecode :: string         -- not allways available, may break code
     } deriving (Show)
-
-{-
-    REPRESENTATION CONVENTION:
-        * Represents key-value structure of varying data types associated with a string identifier
-    REPRESENTATION INVARIANT:
-        * TRUE
--}
-data KeyVal = KVStr String String | KVInt String Integer deriving (Eq, Show)
--- data KeyVal = KeyVal String KeyVal | KVStr String | KVInt Integer deriving (Eq, Show)  -- RECURSIVE VERSION
 
 {-
     REPRESENTATION CONVENTION:
