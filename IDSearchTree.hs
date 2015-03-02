@@ -1,15 +1,20 @@
-module IDSearchTree where
+
+import Test.HUnit
+
+
 {-
 
 -}
 data Tree a = Empty | Branch a (Tree a) (Tree a)
-	deriving (Show)
+	deriving (Show, Eq)
 {-
 searchTuple (Tree Integer) Integer (Tree Integer, Bool)
-PURPOSE		: To create a tuple with a binary tree of integers and a bool if provided integer was already in the searchtree.
-PRE 		: 
-POST 		:
-EXAMPLES 	:		
+PURPOSE		:To create a tuple with a binary tree of integers and a bool if provided integer was already in the searchtree.
+PRE 		:A Tree and a ID (17 digit Integer)
+POST 		:A Tree with the inserted ID
+EXAMPLES 	:
+	searchTuple (Branch 10 Empty Empty) 0 = (Branch 10 (Branch 9 Empty Empty) Empty,False)
+
 -}
 searchTuple :: Tree Integer -> Integer -> (Tree Integer, Bool)
 searchTuple Empty b = ((isInIDSearchTree Empty b),(searchIDTree Empty b))
@@ -69,3 +74,14 @@ insertIDSearchTree Empty b = (Branch b Empty Empty)
 insertIDSearchTree (Branch a left right) b 
 					| b > a  = (Branch a left (insertIDSearchTree right b))
 					| b < a  = (Branch a (insertIDSearchTree left b) right)
+
+
+test1 = TestCase (assertEqual "for (searchTuple ((Branch 10 (Branch 9 Empty Empty) (Branch 11 Empty (Branch 12 Empty Empty)))) 10)," (Branch 10 (Branch 9 Empty Empty) (Branch 11 Empty (Branch 12 Empty Empty)),True) (searchTuple (Branch 10 (Branch 9 Empty Empty) (Branch 11 Empty (Branch 12 Empty Empty))) 10))
+test2 = TestCase (assertEqual "for (searchTuple (Branch 10 Empty Empty) 10)," (Branch 10 Empty Empty,True) (searchTuple (Branch 10 Empty Empty) 10))
+
+tests = TestList [TestLabel "Lite svår" test1, TestLabel "Lätt" test2]
+
+
+
+
+
