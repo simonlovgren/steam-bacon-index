@@ -79,8 +79,9 @@ resolveVanity _ = do
 		--
 -}
 friends :: SteamID -> IO Unknown
-friends _ = do
-	return Unknown
+friends id = do
+	friends <- SteamAPI.Friends.getFriends id
+	return friends
 
 {-
 	friendsIDs steamid

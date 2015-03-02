@@ -145,7 +145,7 @@ instance JSON Player where
 -}
 extractList :: Result ResponseWrapper -> [Player]
 extractList (Ok x)  = players (response x)
-extractList (Error _)  = []
+extractList (Error _)  = error "Parsing failed"
 
 
 
@@ -185,6 +185,64 @@ playersExist ids = do
 
 
 
+{-
+    extractPlayers playerlist
+
+    PURPOSE:
+        Extract raw list of players to KeyVal-list
+
+    PRE:
+        TRUE
+
+    POST:
+        * Returns list of KeyVal type with player data
+
+    EXAMPLES:
+        --- 
+-}
+playerList :: Result ResponseWrapper -> Maybe [[KeyVal]]
+playerList l@(Ok x) =
+    let
+        playerList' :: [Player] -> [[KeyVal]]
+        playerList' [] = []
+        playerList' (player:xs) = [KVInt "steamid" (read (steamid player)), KVStr "personaname" (personaname player), KVInt "lastlogoff" (lastlogoff player), KVStr "profileurl" (profileurl player), KVStr "avatar" (avatar player), KVStr "avatarmedium" (avatarmedium player), KVStr "avatarfull" (avatarfull player)] : playerList' xs
+    in
+        Just $ playerList' (extractList l)
+playerList (Error _) = Nothing
+
+
+{-
+    getPlayerList list
+
+    PURPOSE:
+        Get all player summaries
+
+    PRE:
+        A maximum of 100 ID:s in supplied list
+
+    POST:
+        * Returns Just [[KeyVal]] if OK, Nothing if error occurs
+
+    EXAMPLES:
+        ---
+
+-}
+getPlayerList :: [SteamID] -> IO (Maybe [[KeyVal]])
+getPlayerList [] = do
+    putStrLn "No ID:s supplied to getPlayerList"
+    return $ Nothing
+
+getPlayerList ids = do
+    if ((length ids) > 100)
+        then do
+            putStrLn "Cannot check more than 100 steam users ath the same time."
+            return $ Nothing
+    else do
+        raw <- SteamAPI.Requests.getPlayerSummaries ids
+        -- putStrLn raw
+        let parsed = decode raw :: Result ResponseWrapper
+        -- print parsed
+        return $ playerList ids
 
 
 ---- Testdata ----
