@@ -21,16 +21,19 @@ Import- and use steam API from file *steam* in root folder:
 import qualified Steam
 
 -- get list of friends IDs:
-Steam.friendsIDs 76561197979971024  -- fetches friends as [Integer]
+Steam.friendsIDs 76561197979971024  -- fetches friends as IO [Integer]
 
-Steam.friends 76561197979971024 	-- fetch friends as [[KeyVal]]
+-- get list of friends:
+Steam.friends 76561197979971024 	-- fetch friends as IO [[KeyVal]] list
 
-Steam.resolveVanity "erikun"		-- return steam ID as Integer
+-- check if users exist on Steam:
+Steam.playersExist [76561197979971024,76561197979971024,76561197979971024]	-- Check if users in supplied list exists IO Bool
 
--- ... etc ... --
+-- retreive steam user summaries:
+Steam.playerSummaries [76561197979971024]	-- Retreive player summaries as [[KeyVal]] list
 ```
 
-** Retreiving personaname from [[KeyVal]] list**
+** EXAMPLE: Retreiving personaname from [[KeyVal]] list**
 Example of retreiving names from list of Steam ID:s using Steam.playerSummaries and KeyVal-module:
 ```
 #! haskell
