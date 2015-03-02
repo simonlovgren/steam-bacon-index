@@ -23,7 +23,7 @@ searchTuple (Branch a left right) b = ((isInIDSearchTree (Branch a left right) b
 {-
 searchIDTree (Tree Integer) Integer Bool
 PURPOSE		: To return a True is Integer is found in the tree and a False if integer is not found in the tree.
-PRE 		: 
+PRE 		: A Tree and a ID
 POST 		: A boolean
 EXAMPLES 	: searchIDTree (Branch 10 (Branch 9 Empty Empty) (Branch 12 Empty Empty)) 12 = True	
 			  searchIDTree (Branch 10 (Branch 9 Empty Empty) (Branch 12 Empty Empty)) 11 = False		
@@ -38,7 +38,7 @@ searchIDTree (Branch a left right) b
 {-
 isInIDSearchTree (Tree Integer) Integer (Tree Integer)
 PURPOSE		: To check if an integer is in a tree or not, if it is, return the tree, else return a tree with integer inserted
-PRE 		: 
+PRE 		: A Tree and a ID
 POST 		: A Tree 
 EXAMPLES 	:		
 -}
@@ -51,9 +51,9 @@ isInIDSearchTree (Branch a left right) b
 {-
 isInIDSearchTreeAux (Tree Integer) Integer Bool
 PURPOSE		: Just to examine if a integer is in a tree or not, returns a Boolean 
-PRE 		: 
-POST 		:
-EXAMPLES 	:		
+PRE 		: A Tree and a ID
+POST 		: A Bool
+EXAMPLES 	: isInIDSearchTreeAux (Branch 10 (Branch 9 Empty Empty) Empty) 10 = False
 -}
 isInIDSearchTreeAux :: Tree Integer -> Integer -> Bool
 isInIDSearchTreeAux Empty a = True 
