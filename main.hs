@@ -1,5 +1,6 @@
-import breadthfirstsearch
-
+import BreadthFirstSearch
+import FifoQueue
+import IDSearchTree
 
 main :: IO ()
 main = do  
