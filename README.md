@@ -30,6 +30,21 @@ Steam.resolveVanity "erikun"		-- return steam ID as Integer
 -- ... etc ... --
 ```
 
+** Retreiving personaname from [[KeyVal]] list**
+Example of retreiving names from list of Steam ID:s using Steam.playerSummaries and KeyVal-module:
+```
+#! haskell
+
+-- Retreive friends and unwrap IO Monad (to use as an example list)
+friends <- Steam.friendsIDs 76561197979971024
+-- Push friends to playerSummaries and unwrap IO Monad to expose [[KeyVal]] list
+players <- Steam.playerSummaries friends
+
+-- Map KeyVal.findKVString over [[KeyVal]] list with search argument "personaname"
+map (flip findKVString "personaname") players
+	-- = [Maybe String] containing Maybe (personaname) instead of KeyVal structure 
+
+```
 
 ## Git tutorials:
 [https://www.atlassian.com/git/tutorials/](https://www.atlassian.com/git/tutorials/)

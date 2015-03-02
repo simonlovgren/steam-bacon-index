@@ -11,7 +11,7 @@
     TODO: Review document, restructure and document
 -}
 
-module SteamAPI.Summaries (playersExist) where
+module SteamAPI.Summaries (playersExist, getPlayerList) where
 
 import           Control.Applicative ((<$>),(<*>))
 import           Control.Monad
@@ -186,7 +186,7 @@ playersExist ids = do
 
 
 {-
-    extractPlayers playerlist
+    playerList playerlist
 
     PURPOSE:
         Extract raw list of players to KeyVal-list
@@ -195,20 +195,20 @@ playersExist ids = do
         TRUE
 
     POST:
-        * Returns list of KeyVal type with player data
+        * Returns list of KeyVal type with player data, empty list on error or no result
 
     EXAMPLES:
         --- 
 -}
-playerList :: Result ResponseWrapper -> Maybe [[KeyVal]]
+playerList :: Result ResponseWrapper -> [[KeyVal]]
 playerList l@(Ok x) =
     let
         playerList' :: [Player] -> [[KeyVal]]
         playerList' [] = []
         playerList' (player:xs) = [KVInt "steamid" (read (steamid player)), KVStr "personaname" (personaname player), KVInt "lastlogoff" (lastlogoff player), KVStr "profileurl" (profileurl player), KVStr "avatar" (avatar player), KVStr "avatarmedium" (avatarmedium player), KVStr "avatarfull" (avatarfull player)] : playerList' xs
     in
-        Just $ playerList' (extractList l)
-playerList (Error _) = Nothing
+        playerList' (extractList l)
+playerList (Error _) = []
 
 
 {-
@@ -227,22 +227,22 @@ playerList (Error _) = Nothing
         ---
 
 -}
-getPlayerList :: [SteamID] -> IO (Maybe [[KeyVal]])
+getPlayerList :: [SteamID] -> IO ([[KeyVal]])
 getPlayerList [] = do
     putStrLn "No ID:s supplied to getPlayerList"
-    return $ Nothing
+    return $ []
 
 getPlayerList ids = do
     if ((length ids) > 100)
         then do
             putStrLn "Cannot check more than 100 steam users ath the same time."
-            return $ Nothing
+            return $ []
     else do
         raw <- SteamAPI.Requests.getPlayerSummaries ids
         -- putStrLn raw
         let parsed = decode raw :: Result ResponseWrapper
         -- print parsed
-        return $ playerList ids
+        return $ playerList parsed
 
 
 ---- Testdata ----

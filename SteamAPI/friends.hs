@@ -139,23 +139,21 @@ makeListOfIDs (Error _) = []
         TRUE
 
     POST:
-        * Returns list of Friend data type with steam ID:s of friends in friendslist
+        * Returns list of Friend data type with steam ID:s of friends in friendslist. If error or nothing found- returns empty list.
 
     EXAMPLES:
         extractFriends Nothing = []
         extractFriends Just (FriendsList {friendslist = (Friends {friends = [Friend {steamid = "76561197965528292", relationship = "friend", friend_since = 1223307109}]})}) = [Friend {steamid = "76561197965528292", relationship = "friend", friend_since = 1223307109}]
-    
-    TODO: Re-make to return [[(String, ??)]] to be able to export without clashing automatically created record-style functions.
 -}
-extractFriends :: Result FriendsList -> Maybe [[KeyVal]]
+extractFriends :: Result FriendsList -> [[KeyVal]]
 extractFriends (Ok x) =
     let
         extractFriends' :: [Friend] -> [[KeyVal]]
         extractFriends' [] = []
         extractFriends' (friend:xs) = [KVInt "steamid" (read (steamid friend)), KVStr "relationship" (relationship friend), KVInt "friend_since" (friend_since friend)] : extractFriends' xs
     in
-        Just $ extractFriends' (friends (friendslist(x)))
-extractFriends (Error _) = Nothing
+        extractFriends' (friends (friendslist(x)))
+extractFriends (Error _) = []
 
 
 {-
@@ -197,7 +195,7 @@ getIDList id = do
         ---
 
 -}
-getRawList :: SteamID -> IO (Maybe [[KeyVal]])
+getRawList :: SteamID -> IO [[KeyVal]]
 getRawList id = do
     raw <- SteamAPI.Requests.getFriendList id
     -- putStrLn raw

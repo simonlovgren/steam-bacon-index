@@ -6,12 +6,11 @@
     NOTES:
         * Uses the underlying SteamAPI modules
 
-
-
     NOTE: Under construction
-    TODO: Add exports when file is done?
+    TODO: Strip unused functions before turning in
 -}
 module Steam where
+import KeyVal
 
 import qualified SteamAPI.Friends
 import qualified SteamAPI.Summaries
@@ -54,10 +53,10 @@ data Unknown = Unknown deriving (Show)
 	Examples:
 		--
 -}
-resolveVanity :: VanityTag -> IO (Maybe Integer)
-resolveVanity _ = do
-	putStrLn "Not yet created"
-	return Nothing
+--resolveVanity :: VanityTag -> IO (Maybe Integer)
+--resolveVanity _ = do
+--	putStrLn "Not yet created"
+--	return Nothing
 
 -- ################### FRIENDS ################### --
 {-
@@ -78,9 +77,9 @@ resolveVanity _ = do
 	Examples:
 		--
 -}
-friends :: SteamID -> IO Unknown
+friends :: SteamID -> IO [[KeyVal]]
 friends id = do
-	friends <- SteamAPI.Friends.getFriends id
+	friends <- SteamAPI.Friends.getRawList id
 	return friends
 
 {-
@@ -147,10 +146,8 @@ playersExist list = SteamAPI.Summaries.playersExist list
 	Examples:
 		--
 -}
-playerSummaries :: [SteamID] -> IO Unknown
-playerSummaries _ = do
-	putStrLn "Not yet created"
-	return Unknown
+playerSummaries :: [SteamID] -> IO [[KeyVal]]
+playerSummaries ids = SteamAPI.Summaries.getPlayerList ids
 
 {-
 	ownedGames steamid
@@ -170,10 +167,10 @@ playerSummaries _ = do
 	Examples:
 		--
 -}
-ownedGames :: SteamID -> IO Unknown
-ownedGames _ = do
-	putStrLn "Not yet created"
-	return Unknown
+--ownedGames :: SteamID -> IO Unknown
+--ownedGames _ = do
+--	putStrLn "Not yet created"
+--	return Unknown
 
 {-
 	ownedGames steamid
@@ -193,10 +190,10 @@ ownedGames _ = do
 	Examples:
 		--
 -}
-ownedGamesIDs :: SteamID -> IO [AppID]
-ownedGamesIDs _ = do
-	putStrLn "Not yet created"
-	return []
+--ownedGamesIDs :: SteamID -> IO [AppID]
+--ownedGamesIDs _ = do
+--	putStrLn "Not yet created"
+--	return []
 
 {-
 	playerAchievements steamid
@@ -216,10 +213,10 @@ ownedGamesIDs _ = do
 	Examples:
 		--
 -}
-playerAchievements :: SteamID -> IO Unknown
-playerAchievements _ = do
-	putStrLn "Not yet created"
-	return Unknown
+--playerAchievements :: SteamID -> IO Unknown
+--playerAchievements _ = do
+--	putStrLn "Not yet created"
+--	return Unknown
 
 {-
 	recentlyPlayed steamid
@@ -239,10 +236,10 @@ playerAchievements _ = do
 	Examples:
 		--
 -}
-recentlyPlayed :: SteamID -> IO Unknown
-recentlyPlayed _ = do
-	putStrLn "Not yet created"
-	return Unknown
+--recentlyPlayed :: SteamID -> IO Unknown
+--recentlyPlayed _ = do
+--	putStrLn "Not yet created"
+--	return Unknown
 
 {-
 	recentlyPlayedIDs steamid
@@ -262,10 +259,10 @@ recentlyPlayed _ = do
 	Examples:
 		--
 -}
-recentlyPlayedIDs :: SteamID -> IO [AppID]
-recentlyPlayedIDs _ = do
-	putStrLn "Not yet created"
-	return []
+--recentlyPlayedIDs :: SteamID -> IO [AppID]
+--recentlyPlayedIDs _ = do
+--	putStrLn "Not yet created"
+--	return []
 
 -- ################### GAMES ################### --
 {-
@@ -286,10 +283,10 @@ recentlyPlayedIDs _ = do
 	Examples:
 		--
 -}
-appSchema :: AppID -> IO Unknown
-appSchema _ = do
-	putStrLn "Not yet created"
-	return Unknown
+--appSchema :: AppID -> IO Unknown
+--appSchema _ = do
+--	putStrLn "Not yet created"
+--	return Unknown
 
 -- ################### OTHER ################### --
 {-
