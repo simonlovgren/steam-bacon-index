@@ -33,8 +33,7 @@ Steam.playersExist [76561197979971024,76561197979971024,76561197979971024]	-- Ch
 Steam.playerSummaries [76561197979971024]	-- Retreive player summaries as [[KeyVal]] list
 ```
 
-** EXAMPLE: Retreiving personaname from [[KeyVal]] list**
-Example of retreiving names from list of Steam ID:s using Steam.playerSummaries and KeyVal-module:
+** EXAMPLE: Retreiving personaname from [[KeyVal]] list** using Steam.playerSummaries and KeyVal-module:
 ```
 #!haskell
 
