@@ -8,7 +8,7 @@
         * The following stackexchange was used to understand how to implement the JSON-package:
           http://stackoverflow.com/questions/17844223/json-parsing-in-haskell
 
-    TODO: Review document, restructure and document
+    TODO: Review document
 -}
 
 module SteamAPI.Friends (getIDList, getRawList) where
@@ -17,10 +17,7 @@ import           Control.Applicative ((<$>),(<*>))
 import           Control.Monad
 import           Text.JSON
 
--- Import Steam Request
 import qualified SteamAPI.Requests (getFriendList)
-
--- import KeyVal
 import KeyVal
 
 {-

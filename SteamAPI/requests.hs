@@ -12,7 +12,7 @@
 		* SteamID (Simon/Maustronaut)			:: 76561197979971024
 
 
-    TODO: Review document, restructure (and document functions?)
+    TODO: Review document
 -}
 
 module SteamAPI.Requests 
@@ -33,8 +33,19 @@ module SteamAPI.Requests
 import Network.HTTP
 import Data.List
 
--- Data types --
+{-
+    REPRESENTATION CONVENTION:
+        * Represents a "64-bit" integer steam ID
+    REPRESENTATION INVARIANT:
+        * TRUE
+-}
 type SteamID = Integer
+{-
+    REPRESENTATION CONVENTION:
+        * Represents a "64-bit" integer steam application ID
+    REPRESENTATION INVARIANT:
+        * TRUE
+-}
 type AppID = Integer
 
 -- BASE SETTINGS --
