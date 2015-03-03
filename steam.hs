@@ -105,13 +105,34 @@ playersExist list = SteamAPI.Summaries.playersExist list
 		Not yet determined, but probably IO (Maybe Integer)
 	
 	SIDE EFFECTS:
-		--
+		* May return summaries in order different from ID:s in list
 
 	Examples:
 		--
 -}
 playerSummaries :: [SteamID] -> IO [[KeyVal]]
 playerSummaries ids = SteamAPI.Summaries.getPlayerList ids
+
+{-
+	playerSummaries list
+
+	PURPOSE:
+		Return player personanames for suppied ID:s in same order as ID:s 
+
+	PRE:
+		True
+
+	POST:
+		Not yet determined, but probably IO (Maybe Integer)
+	
+	SIDE EFFECTS:
+		--
+
+	Examples:
+		--
+-}
+playerNamesOrdered :: [SteamID] -> IO [Maybe String]
+playerNamesOrdered ids = SteamAPI.Summaries.getOrderedNames ids
 
 
 

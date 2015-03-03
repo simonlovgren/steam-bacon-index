@@ -11,7 +11,7 @@
     TODO: Review document
 -}
 
-module SteamAPI.Summaries (playersExist, getPlayerList) where
+module SteamAPI.Summaries (playersExist, getPlayerList, getOrderedNames) where
 
 import           Control.Applicative ((<$>),(<*>))
 import           Control.Monad
@@ -209,6 +209,35 @@ playerList (Error _) = []
 
 
 {-
+    TODO: Comments
+-}
+orderedNames :: Result ResponseWrapper -> [SteamID] -> [Maybe String]
+orderedNames l@(Ok _) ids =
+    let
+        {-
+            TODO: Comments
+        -}
+        orderedNames' :: [SteamID] -> [[KeyVal]] -> [Maybe String]
+        orderedNames' [] _ = []
+        orderedNames' (id:ids) players = (nameOfPlayer id players) : orderedNames' ids players
+    in
+        orderedNames' ids (playerList l)
+
+orderedNames (Error _) _ = []
+
+
+
+{-
+    TODO: Comments
+-}
+nameOfPlayer :: SteamID -> [[KeyVal]] -> Maybe String
+nameOfPlayer id (player:players)
+    | (findKVInt player "steamid") == (Just id) = findKVString player "personaname"
+    | otherwise = nameOfPlayer id players
+nameOfPlayer id [] = Nothing
+
+
+{-
     getPlayerList list
 
     PURPOSE:
@@ -240,6 +269,28 @@ getPlayerList ids = do
         let parsed = decode raw :: Result ResponseWrapper
         -- print parsed
         return $ playerList parsed
+
+
+
+{-
+    TODO: Comments
+-}
+getOrderedNames :: [SteamID] -> IO ([Maybe String])
+getOrderedNames [] = do
+    putStrLn "No ID:s supplied to getOrderedNames"
+    return $ []
+
+getOrderedNames ids = do
+    if ((length ids) > 100)
+        then do
+            putStrLn "Cannot check more than 100 steam users ath the same time."
+            return $ []
+    else do
+        raw <- SteamAPI.Requests.getPlayerSummaries ids
+        -- putStrLn raw
+        let parsed = decode raw :: Result ResponseWrapper
+        -- print parsed
+        return $ orderedNames parsed ids
 
 
 ---- Testdata ----
