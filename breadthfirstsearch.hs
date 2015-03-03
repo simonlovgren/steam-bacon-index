@@ -1,16 +1,18 @@
 module BreadthFirstSearch where 
 
-import SteamAPI
+import Steam
 import FifoQueue
 import IDSearchTree
-import SteamFriends
+import Test.HUnit
+import Control.Monad
+import Control.Exception
 
 
 {-
 breadthFirstSearch q g t
 PURPOSE		: Loops through the queue and terminates if queue is empty or looked for id is found.
-PRE 		: 
-POST 		:
+PRE 		: True
+POST 		: Returns a list with blablabla
 EXAMPLES 	:
 SIDEEFFECTS     : Plenty
 -}
@@ -23,59 +25,54 @@ breadthFirstSearch q goal visited = do
       --get the next id in the queue and ids on steam connected to it.
       let (entry, queue) = deQueue q
           (steamid, route) = (fst entry, snd entry)
-      aList <- getIDs steamid
+      aList <- friendsIDs steamid
       --debugg output
-      putStrLn (show steamid ++ " has " ++ show(length aList) ++ " friends, current depth " ++ show(length route + 1))
+      putStrLn (show steamid ++ " has depth " ++ show(length route + 1))
+      -- Add ids not yet visited to the queue and start over.
+      let (newQueue, visitedUpdated, goalReached) = checkAndAdd queue (steamid:route) visited aList goal
       --check if one of the ids connected to the id in the queue is the one searched for.
-      if not(goalIdReached aList goal) then do
-        -- Add ids not yet visited to the queue and start over.
-        let (newQueue, visitedUpdated) = checkAndAdd queue (steamid:route) visited aList
+      if not goalReached then do
         breadthFirstSearch newQueue goal visitedUpdated
         else do
         putStrLn ("I found it!! " ++ show (length route) ++ " people between the ids")
 
 {-
-
-PURPOSE		: Checks if id has already been visited or adds it to the queue unless the termination depth has been reached.
-PRE 		: 
-POST 		:
+checkAndAdd q r v i g
+PURPOSE		: Checks if id is the one searched for and adds ids not yet visited to queue.
+PRE 		: True
+POST 		: Adds not visited ids in i to queue q and tree of visited v if depth of search not yet reached, or returns True if g is found in list i.
 EXAMPLES 	:		
 -}
-checkAndAdd :: SimpleQueue ((Integer, [Integer])) -> [Integer] -> Tree Integer  -> [Integer] -> (SimpleQueue ((Integer, [Integer])), Tree Integer)
-checkAndAdd q route prevVisited [] = (q,prevVisited)
-checkAndAdd q route  prevVisited (id:remainingId)
-  | not isVisited && not(depthReached route) = checkAndAdd (queue (id,route) q) route visitedUpdated remainingId
-  | otherwise = checkAndAdd q route visitedUpdated remainingId
+checkAndAdd :: SimpleQueue ((Integer, [Integer])) -> [Integer] -> Tree Integer  -> [Integer] -> Integer -> (SimpleQueue ((Integer, [Integer])), Tree Integer, Bool)
+checkAndAdd q route prevVisited idList goal
+  | not (length route + 1 < 5) = (q, prevVisited, goalIdReached idList goal)
+  | otherwise = checkAndAdd_aux q route prevVisited idList goal
     where
-      (visitedUpdated, isVisited) = searchTuple prevVisited id
+      checkAndAdd_aux q route prevVisited [] goal = (q,prevVisited, False)
+      checkAndAdd_aux q route prevVisited (id:remainingId) goal
+        | id == goal = (q, prevVisited, True)
+        | (not isVisited) = checkAndAdd_aux (queue (id,route) q) route visitedUpdated remainingId goal
+        | otherwise = checkAndAdd_aux q route visitedUpdated remainingId goal
+          where
+            (visitedUpdated, isVisited) = searchTuple prevVisited id
+
 
 {-
-
+goalIdReached i g
 PURPOSE		: Check if the looked for id has been found.
-PRE 		: 
-POST 		:
-EXAMPLES 	:		
+PRE 		: True
+POST 		: Returns True if g is in list i.
+EXAMPLES 	: 
 -}
 goalIdReached [] _ = False
 goalIdReached (x:xs) goal
   | x == goal = True
   | otherwise = goalIdReached xs goal
 
+--testcases
+testValue :: IO Integer
+testValue = return(76561198028357851)
 {-
-
-PURPOSE		: Checks if certain depth has been reached by the graph algorithm.
-PRE 		: 
-POST 		:
-EXAMPLES 	:		
--}
-depthReached :: [Integer] -> Bool
-depthReached list = if (length list + 1) < 5 then False else True
-
-
---halvfärdiga testcase
-test :: IO Integer
-test = return(76561198028357851)
-
 --Check if goal reached
 test1 = do
   testid <- test
@@ -87,22 +84,31 @@ test2 = do
   testid <- test
   let q = queue (testid,[]) EmptyQ
   breadthFirstSearch EmptyQ 1 Empty
-
+-}
 --Check other...
 test3 =  do
-  testid <- test
+  testid <- testValue
   let q = queue (testid,[]) EmptyQ
-  breadthFirstSearch q 76561197999847293 Empty
-
+  breadthFirstSearch q 76561197962270956 Empty
+{-
 --testing checkAndAdd
 test4 = checkAndAdd EmptyQ [] Empty [76561197989194839,76561198000124224,76561198043343260]
-
+-}
+--test if goal id is not found
 test5 = do
-  testid <- test
+  testid <- testValue
   let q = queue (testid,[]) EmptyQ
   breadthFirstSearch q 1 Empty
-
+{-
+--test a bit down
 test6 = do
   testid <- test
   let q = queue (testid,[]) EmptyQ
   breadthFirstSearch q 76561198015054781 Empty
+-}
+
+
+
+--testBfs1 = TestCase $ assertBool "Test 
+
+runBfsTests = runTestTT $ TestList []
