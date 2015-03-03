@@ -52,6 +52,7 @@ isReadableString s =
 			isReadableString' ('7':xs) dotFound = True : (isReadableString' xs dotFound)
 			isReadableString' ('8':xs) dotFound = True : (isReadableString' xs dotFound)
 			isReadableString' ('9':xs) dotFound = True : (isReadableString' xs dotFound)
+			isReadableString' ('0':xs) dotFound = True : (isReadableString' xs dotFound)
 			isReadableString' ('.':xs) True		= False: (isReadableString' xs True)
 			isReadableString' ('.':xs) _	    = True : (isReadableString' xs True)
 			isReadableString' ( _ :xs) _ 		= False: []
