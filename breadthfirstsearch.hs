@@ -24,7 +24,7 @@ breadthFirstSearch :: SimpleQueue ((Integer,[Integer])) -> Integer -> Tree Integ
 breadthFirstSearch q goal visited = do
   -- check if the queue is empty, which means the id was not found in the network.
   if (isQueueEmpty q) then do
-    putStrLn "Didnt find any match before queue empty"
+    putStrLn "Didnt find any match before reaching the end of the network or too many degrees of separation"
     else do
       --get the next id in the queue and ids on steam connected to it.
       let (entry, queue) = deQueue q
