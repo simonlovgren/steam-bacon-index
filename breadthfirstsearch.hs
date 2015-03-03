@@ -1,7 +1,9 @@
 module BreadthFirstSearch where 
 
+--standard modules
 import Test.HUnit
 
+--"homemade" modules
 import Steam
 import FifoQueue
 import IDSearchTree
@@ -11,11 +13,12 @@ import KeyVal
 
 {-
 breadthFirstSearch q g t
-PURPOSE		: Loops through the queue and terminates if queue is empty or looked for id is found.
+PURPOSE		: Gathers friend lists from steam, starting with the first value in the queue, and searches them for the goal id. Terminates with a success message if id is found or
+                  a failure message if id not found withina depth of five in the friend network or if all friends in the network has been searched.
 PRE 		: True
-POST 		: Returns a list with blablabla
-EXAMPLES 	:
-SIDEEFFECTS     : Plenty
+POST 		: True
+EXAMPLES 	: N/A
+SIDEEFFECTS     : Displays current ID being investigated and the final result of the breadth first search function.
 -}
 breadthFirstSearch :: SimpleQueue ((Integer,[Integer])) -> Integer -> Tree Integer -> IO ()
 breadthFirstSearch q goal visited = do
@@ -27,15 +30,15 @@ breadthFirstSearch q goal visited = do
       let (entry, queue) = deQueue q
           (steamid, route) = (fst entry, snd entry)
       aList <- friendsIDs steamid
-      --debugg output
+      --show what the program is working on.
       putStrLn (show steamid ++ " has depth " ++ show(length route + 1))
-      -- Add ids not yet visited to the queue and start over.
+      -- Check if any of the ids is the one we are looking for and add not yet visited to the queue unless termination depth has been reached.
       let (newQueue, visitedUpdated, goalReached) = checkAndAdd queue (steamid:route) visited aList goal
       --check if one of the ids connected to the id in the queue is the one searched for.
       if not goalReached then do
         breadthFirstSearch newQueue goal visitedUpdated
         else do
-        print (goal:steamid:route)
+        putStrLn ("Id found, " ++ show (length (route)) ++ " id between them.")
         successRoute (goal:steamid:route)
 
 {-
@@ -43,32 +46,63 @@ checkAndAdd q r v i g
 PURPOSE		: Checks if id is the one searched for and adds ids not yet visited to queue.
 PRE 		: True
 POST 		: Adds not visited ids in i to queue q and tree of visited v if depth of search not yet reached, or returns True if g is found in list i.
-EXAMPLES 	:		
+EXAMPLES 	: checkAndAdd EmptyQ [] Empty [1,2,3] 0        = (SQ [(1,[])] [(3,[]),(2,[])],Branch 1 Empty (Branch 2 Empty (Branch 3 Empty Empty)),False)
+                  checkAndAdd EmptyQ [] Empty [1,2,3] 1        = (EmptyQ,Empty,True)
+                  checkAndAdd EmptyQ [1,2,3,4] Empty [1,2,3] 0 = (EmptyQ,Empty,False)
 -}
 checkAndAdd :: SimpleQueue ((Integer, [Integer])) -> [Integer] -> Tree Integer  -> [Integer] -> Integer -> (SimpleQueue ((Integer, [Integer])), Tree Integer, Bool)
 checkAndAdd q route prevVisited idList goal
+  -- check if termination depth has been reached and if so check if goal has been reached
   | not (length route + 1 < 5) = (q, prevVisited, goalIdReached idList goal)
   | otherwise = checkAndAdd_aux q route prevVisited idList goal
     where
+      {-
+      checkAndAdd q r v i g
+      PURPOSE		: Checks if id is the one searched for and adds ids not yet visited to queue.
+      PRE 		: True
+      POST 		: Adds not visited ids in i to queue q and tree of visited v if depth of search not yet reached, or returns True if g is found in list i.
+      EXAMPLES 	        : checkAndAdd EmptyQ [] Empty [1,2,3] 0 = (SQ [(1,[])] [(3,[]),(2,[])],Branch 1 Empty (Branch 2 Empty (Branch 3 Empty Empty)),False)
+                          checkAndAdd EmptyQ [] Empty [1,2,3] 1 = (EmptyQ,Empty,True)
+      -}
       checkAndAdd_aux q route prevVisited [] goal = (q,prevVisited, False)
       checkAndAdd_aux q route prevVisited (id:remainingId) goal
+        -- check if id is the id we are looking for, if so return True
         | id == goal = (q, prevVisited, True)
+        -- Otherwise if id has not been visited, add it to the tree with visited ids and the queue
         | (not isVisited) = checkAndAdd_aux (queue (id,route) q) route visitedUpdated remainingId goal
+        -- if id has been visited move on to next id in the list
         | otherwise = checkAndAdd_aux q route visitedUpdated remainingId goal
           where
             (visitedUpdated, isVisited) = searchTuple prevVisited id
 
+{-
+successRoute xs
+PURPOSE		: Gets player nicknames from Steam and prints them in order.
+PRE 		: True
+POST 		: True
+SIDE EFFECTS    : Prints the route between the two investigated ids to the console.
+EXAMPLES 	: N/A		
+-}
 successRoute :: [Integer] -> IO ()
 successRoute idList = do
-  summaries <- Steam.playerSummaries idList
-  let names = map (flip findKVString "personaname") summaries
+  names <- Steam.playerNamesOrdered idList
   print names
-  putStrLn $ printSuccessRoute names
-
-printSuccessRoute [] = []
-printSuccessRoute ((Just name):[]) = "From " ++  name
-printSuccessRoute ((Nothing):names) = printSuccessRoute names ++ " unknown "
-printSuccessRoute ((Just name):names) = printSuccessRoute names ++ " to " ++ name
+  putStrLn $ makeStringOfRoute names
+  
+{-
+makeStringOfRoute xs
+PURPOSE		: Gets player nicknames from Steam and prints them in order.
+PRE 		: True
+POST 		: Returns a string with the elements in xs concatenated.
+EXAMPLES 	: makeStringOfRoute ["one","two","three"] = "From three to two to one"
+                  makeStringOfRoute [Nothing,"two","three"] = "From three to two to unknown"	
+-}
+makeStringOfRoute :: [Maybe String] -> String
+makeStringOfRoute [] = []
+makeStringOfRoute ((Just name):[]) = "From " ++  name
+makeStringOfRoute ((Nothing):[]) = "From unknown"
+makeStringOfRoute ((Nothing):names) = makeStringOfRoute names ++ " to unknown"
+makeStringOfRoute ((Just name):names) = makeStringOfRoute names ++ " to " ++ name
   
 
 {-
@@ -76,55 +110,58 @@ goalIdReached i g
 PURPOSE		: Check if the looked for id has been found.
 PRE 		: True
 POST 		: Returns True if g is in list i.
-EXAMPLES 	: 
+EXAMPLES 	: N/A
 -}
+goalIdReached :: Eq a => [a] -> a -> Bool
 goalIdReached [] _ = False
 goalIdReached (x:xs) goal
   | x == goal = True
   | otherwise = goalIdReached xs goal
 
---testcases
-testValue :: IO Integer
-testValue = return(76561198028357851)
-{-
---Check if goal reached
-test1 = do
-  testid <- test
-  let q = queue (testid,[]) EmptyQ
-  breadthFirstSearch q 76561198000124224 Empty
 
---Check if queue empty
-test2 = do
-  testid <- test
-  let q = queue (testid,[]) EmptyQ
-  breadthFirstSearch EmptyQ 1 Empty
--}
---Check other...
-test3 =  do
-  testid <- testValue
-  let q = queue (testid,[]) EmptyQ
-  breadthFirstSearch q 76561197962270956 Empty
-{-
---testing checkAndAdd
-test4 = checkAndAdd EmptyQ [] Empty [76561197989194839,76561198000124224,76561198043343260]
--}
---test if goal id is not found
-test5 = do
-  testid <- testValue
-  let q = queue (testid,[]) EmptyQ
-  breadthFirstSearch q 1 Empty
-{-
---test a bit down
-test6 = do
-  testid <- test
-  let q = queue (testid,[]) EmptyQ
-  breadthFirstSearch q 76561198015054781 Empty
--}
+--Testcases
 
-{-
-
-testBfs1 = TestCase $ assertBool "Test if initial insertion to tree and queue works when goal is no" 
+testBfs1 = TestCase $ assertBool "checkAndAdd: Test if initial insertion to tree and queue works when goal is not found" 
            (let
-              (result = checkAndAdd EmptyQ [] Empty [1,2,3] 
-runBfsTests = runTestTT $ TestList []
--}
+              (q,tree,goal) = checkAndAdd EmptyQ [] Empty [1,2,3] 0
+            in
+              q == (SQ [(1,[])] [(3,[]),(2,[])]) && tree == (Branch 1 Empty (Branch 2 Empty (Branch 3 Empty Empty))) && goal == False)
+
+testBfs2 = TestCase $ assertBool "checkAndAdd: Test if initial insertion to tree and queue works when goal is found" 
+           (let
+              (q,tree,goal) = checkAndAdd EmptyQ [] Empty [1,2,3] 1
+            in
+             goal == True)
+
+testBfs3 = TestCase $ assertBool "checkAndAdd: Test if initial insertion to tree and queue works when goal is found" 
+           (let
+              (q,tree,goal) = checkAndAdd EmptyQ [] (Branch 1 Empty (Branch 2 Empty (Branch 3 Empty Empty))) [1] 0
+            in
+               q == EmptyQ && tree == (Branch 1 Empty (Branch 2 Empty (Branch 3 Empty Empty))) && goal == False)
+
+testBfs4 = TestCase $ assertBool "checkAndAdd: Test if length termination reached, but goal not found" 
+           (let
+              (q,tree,goal) = checkAndAdd EmptyQ [1,2,3,4] Empty [1,2,3] 0
+            in
+              q == EmptyQ && tree == Empty && goal == False)
+
+testBfs5 = TestCase $ assertBool "checkAndAdd: Test if length termination reached, and goal found" 
+           (let
+              (q,tree,goal) = checkAndAdd EmptyQ [1,2,3,4] Empty [1,2,3] 1
+            in
+              q == EmptyQ && tree == Empty && goal == True)
+
+testBfs6 = TestCase $ assertBool "makeStringOfRoute: Test if string is correctly created"
+           (let
+              result = makeStringOfRoute [Just "one",Just "two",Nothing,Just "three"]
+            in
+             result == "From three to unknown to two to one")
+
+testBfs7 = TestCase $ assertBool "makeStringOfRoute: Test if string is correctly created if first element is Nothing"
+           (let
+              result = makeStringOfRoute [Just "one",Just "two",Just "three", Nothing]
+            in
+             result == "From unknown to three to two to one")
+
+runBfsTests = runTestTT $ TestList [testBfs1,testBfs2,testBfs3,testBfs4, testBfs5, testBfs6, testBfs7]
+
