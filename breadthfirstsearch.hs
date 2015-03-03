@@ -1,11 +1,12 @@
 module BreadthFirstSearch where 
 
+import Test.HUnit
+
 import Steam
 import FifoQueue
 import IDSearchTree
-import Test.HUnit
-import Control.Monad
-import Control.Exception
+import KeyVal
+
 
 
 {-
@@ -34,7 +35,8 @@ breadthFirstSearch q goal visited = do
       if not goalReached then do
         breadthFirstSearch newQueue goal visitedUpdated
         else do
-        putStrLn ("I found it!! " ++ show (length route) ++ " people between the ids")
+        print (goal:steamid:route)
+        successRoute (goal:steamid:route)
 
 {-
 checkAndAdd q r v i g
@@ -56,6 +58,18 @@ checkAndAdd q route prevVisited idList goal
           where
             (visitedUpdated, isVisited) = searchTuple prevVisited id
 
+successRoute :: [Integer] -> IO ()
+successRoute idList = do
+  summaries <- Steam.playerSummaries idList
+  let names = map (flip findKVString "personaname") summaries
+  print names
+  putStrLn $ printSuccessRoute names
+
+printSuccessRoute [] = []
+printSuccessRoute ((Just name):[]) = "From " ++  name
+printSuccessRoute ((Nothing):names) = printSuccessRoute names ++ " unknown "
+printSuccessRoute ((Just name):names) = printSuccessRoute names ++ " to " ++ name
+  
 
 {-
 goalIdReached i g
@@ -107,8 +121,10 @@ test6 = do
   breadthFirstSearch q 76561198015054781 Empty
 -}
 
+{-
 
-
---testBfs1 = TestCase $ assertBool "Test 
-
+testBfs1 = TestCase $ assertBool "Test if initial insertion to tree and queue works when goal is no" 
+           (let
+              (result = checkAndAdd EmptyQ [] Empty [1,2,3] 
 runBfsTests = runTestTT $ TestList []
+-}
