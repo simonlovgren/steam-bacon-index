@@ -1,3 +1,11 @@
+{-  
+    PKD 2014/2015 Project
+    Group 30
+    Simon Lövgren
+    Erik Melander
+    Fredrik Svensson
+-}
+
 module IDSearchTree where 
 import Test.HUnit
 
