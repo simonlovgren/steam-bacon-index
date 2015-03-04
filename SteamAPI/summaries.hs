@@ -218,9 +218,8 @@ playersExist ids = do
             return $ False
     else do
         raw <- SteamAPI.Requests.getPlayerSummaries ids
-        -- putStrLn raw
         let parsed = decode raw :: Result ResponseWrapper
-        -- print parsed
+
         return $ (length ids) == (length (extractList parsed))
 
 
@@ -378,9 +377,8 @@ getPlayerList ids = do
             return $ []
     else do
         raw <- SteamAPI.Requests.getPlayerSummaries ids
-        -- putStrLn raw
         let parsed = decode raw :: Result ResponseWrapper
-        -- print parsed
+        
         return $ playerList parsed
 
 
@@ -422,9 +420,8 @@ getOrderedNames ids = do
             return $ []
     else do
         raw <- SteamAPI.Requests.getPlayerSummaries ids
-        -- putStrLn raw
         let parsed = decode raw :: Result ResponseWrapper
-        -- print parsed
+
         return $ orderedNames parsed ids
 
 
