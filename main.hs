@@ -33,10 +33,9 @@ main = do
 isReadableString someString
 PURPOSE		: To determine if all elements in supplied String are numerals.
 PRE 		: A String
-POST 		: True if all elements are numerals and no element is zero, else False.
+POST 		: True if all elements are numerals, else False.
 EXAMPLES 	: isReadableString "123" = True
 			  isReadableString "abc" = False
-			  isReadableString "100" = False
 -}
 isReadableString :: String -> Bool
 isReadableString s =
@@ -82,8 +81,8 @@ mainTest2 = TestCase (assertEqual "for (isRedableString abc)," False (isReadable
 --Test 3; isSteamID with valid input.
 mainTest3 = TestCase (assertEqual "for (isSteamID 12345678911234567)," True (isSteamID "12345678911234567"))
 
---Test 4; isSteamID with NON-valid input, one or more element = zero.
-mainTest4 = TestCase (assertEqual "for (isSteamID 10340678011230560)," False (isSteamID "10340678011230560"))
+--Test 4; isSteamID with NON-valid input, one or more element non numeral.
+mainTest4 = TestCase (assertEqual "for (isSteamID abc40678011230560)," False (isSteamID "abc40678011230560"))
 
 --Test 5; isSteamID with NON-valid input, string is not of length 17.
 mainTest5 = TestCase (assertEqual "for (isSteamID 123)," False (isSteamID "123"))
