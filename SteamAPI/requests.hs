@@ -1,7 +1,10 @@
 {-  
+    PKD 2014/2015 Project
     Group 30
     Simon Lövgren
-    February 2015
+    Erik Melander
+    Fredrik Svensson
+
 
     NOTES:
         * Calls to the WebAPI is made using Network.HTTP
@@ -10,9 +13,6 @@
 
 		* KEY (Simon/slovgren.com)	:: F54C9824025C1E667C45B6887D7765B0
 		* SteamID (Simon/Maustronaut)			:: 76561197979971024
-
-
-    TODO: Review document
 -}
 
 module SteamAPI.Requests 
@@ -27,11 +27,14 @@ module SteamAPI.Requests
 	getSteamApps,
 	getAppSchema,
 	SteamID,
-	AppID) 
+	AppID,
+	steamRequestsTests)
 	where
 
 import Network.HTTP
 import Data.List
+
+import Test.HUnit
 
 {-
     REPRESENTATION CONVENTION:
@@ -48,8 +51,34 @@ type SteamID = Integer
 -}
 type AppID = Integer
 
+
+
 -- BASE SETTINGS --
+{-
+	key
+
+	PURPOSE:
+		Return API key for ease to change key 
+
+	PRE:
+		True
+
+	POST:
+		Return the API key as a string
+-}
 key 	= "F54C9824025C1E667C45B6887D7765B0" -- Steam API Key (Simon/slovgren.com), can be found/created @ http://steamcommunity.com/dev/apikey
+{-
+	apiBase
+
+	PURPOSE:
+		Return API base URL for ease to change if a new URL is required
+
+	PRE:
+		True
+
+	POST:
+		Return the API base URL as a string
+-}
 apiBase = "http://api.steampowered.com"
 
 -- Core functionality --
@@ -78,78 +107,26 @@ get url = do
 	getResponseBody resp
 
 {-
-	code url
-
-	PURPOSE:
-		Fetch response code from URL (url).
-
-	PRE:
-		* A correctly formatted URL is supplied
-
-	SIDE EFFECTS:
-		* Fetches data from Web API using SimpleHTML request
-
-	POST:
-		* Returns response code from given URL (url) and returns it as a triple value tuple containing Ints.
-
-	EXAMPLES:		
-		code "http://google.com" 		== (3,0,2) 		-- HTTP Code 302 Found (Redirection)
-		code "http://google.com/lorem" 	== (4,0,4) 		-- HTTP Code 404 Not Found
-		code "http://google.se" 		== (3,0,1) 		-- HTTP Code 301 Moved Permanently
-		code "http://www.google.se" 	== (2,0,0) 		-- HTTP Code 200 OK
-		
-		code "http://gog98897ole.se" 	== Throws exeption (host lookup failure)
--}
-code :: String -> IO (Int,Int,Int)
-code url = do
-	resp <- simpleHTTP (getRequest url)
-	getResponseCode resp
-
-
-{-
-	printRequestBody string
-
-	PURPOSE:
-		Print the request body to console/terminal with correct formatting.
-
-	PRE:
-		* TRUE
-
-	POST:
-		* TRUE
-
-	EXAMPLES:
-		---
--}
-printRequestBody :: IO String -> IO ()
-printRequestBody iostr = do
-	str <- iostr
-	putStr (str)
-
-
-{-
 	concatIDs ids
 
 	PURPOSE:
-		Concatinate ids and return as comma separated strings.
+		Concatenate ids as comma separated string.
 
 	PRE:
 		* TRUE
 
 	POST:
-		* TRUE
+		* Returns ID:s formatted as comma separated string.
 
 	EXAMPLES:
 		concatIDs [123456789, 2345678, 34567890] == "123456789,2345678,34567890"
 -}
 concatIDs :: [Integer] -> String
 concatIDs [] = []
+concatIDs (x:[]) = (show x) ++ []
 concatIDs (x:xs) = (show x) ++ ',' : concatIDs xs
 
 
--- Specific API calls --
--- IPlayerService -- PLAYERINFO -- 
--- http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=F54C9824025C1E667C45B6887D7765B0&vanityurl=erikun
 {-
 	getSteamIdFromVanityURL vanityname
 
@@ -163,7 +140,7 @@ concatIDs (x:xs) = (show x) ++ ',' : concatIDs xs
 		* Returns request body in form of a IO String containing JSON-formatted/serialized data
 
 	EXAMPLES:
-		getSteamIdFromVanityURL "erikun" == "{\n\t"response": {\n\t\t"steamid": "76561198028357851",\n\t\t"success": 1\n\t}\n}"
+		--
 
 -}
 getSteamIdFromVanityURL :: String -> IO String
@@ -251,7 +228,7 @@ getPlayerAchievements id appid = get (apiBase ++ "/ISteamUserStats/GetPlayerAchi
 	getUserStatsForGame steamID appID
 
 	PURPOSE:
-		Fetch user statistics for app appID for steam user with steamID.
+		Fetch user statistics for app with appID for steam user with steamID.
 
 	PRE:
 		* TRUE
@@ -305,8 +282,6 @@ getRecentlyPlayedGames id = get (apiBase ++ "/IPlayerService/GetRecentlyPlayedGa
 getPlayerBans :: [SteamID] -> IO String
 getPlayerBans ids = get (apiBase ++ "/ISteamUser/GetPlayerBans/v1/?key=" ++ key ++ "&steamids=" ++ (concatIDs ids))
 
-
--- ISteamApps -- App Info--
 {-
 	getSteamApps
 
@@ -347,6 +322,8 @@ getAppSchema appid = get (apiBase ++ "/ISteamUserStats/GetSchemaForGame/v2/?key=
 
 
 
-{-
-	TODO: Add test cases
--}
+
+-- Test 1; Test concatenation of ID:s used for calls with multiple ID:s in same call
+test1 = TestCase $ assertEqual "Concatenate integer list" "123456789,2345678,34567890" (concatIDs [123456789, 2345678, 34567890])
+
+steamRequestsTests = TestList $ [test1]
