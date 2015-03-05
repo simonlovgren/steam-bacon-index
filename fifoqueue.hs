@@ -76,28 +76,28 @@ isQueueEmpty _ = False
 --Test cases
 
 testQ1 = TestCase $ assertBool "Add value to empty queue"
-         (let
-           result = queue 1 createQueue
-          in
-           result == (SQ [1] []))
+    (let
+        result = queue 1 createQueue
+     in
+        result == (SQ [1] []))
 
 testQ2 = TestCase $ assertBool "Addvalue to non-empty queue"
-         (let
-           result = queue 7 (SQ [1,2,3] [6,5,4])
-          in
-           result == (SQ [1,2,3] [7,6,5,4]))
+    (let
+        result = queue 7 (SQ [1,2,3] [6,5,4])
+     in
+        result == (SQ [1,2,3] [7,6,5,4]))
 
 testQ3 = TestCase $ assertBool "Dequeue value from queue with values in both lists"
-         (let
-            (valueOut, remainder) = deQueue (SQ [1,2,3] [7,6,5,4])
-          in
-            valueOut == 1 && remainder == (SQ [2,3] [7,6,5,4]))
+    (let
+        (valueOut, remainder) = deQueue (SQ [1,2,3] [7,6,5,4])
+     in
+        valueOut == 1 && remainder == (SQ [2,3] [7,6,5,4]))
 
 testQ4 = TestCase $ assertBool "Dequeue value from queue with values only in rearlist"
-         (let
-            (valueOut, remainder) = deQueue (SQ [] [3,2,1])
-          in
-            valueOut == 1 && remainder == (SQ [2,3] []))
+    (let
+        (valueOut, remainder) = deQueue (SQ [] [3,2,1])
+     in
+        valueOut == 1 && remainder == (SQ [2,3] []))
 
 testQ5 = TestCase $ assertBool "Check if empty queue is empty" $ isQueueEmpty EmptyQ
 
