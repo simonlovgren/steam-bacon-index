@@ -89,16 +89,13 @@ apiBase = "http://api.steampowered.com"
 		Fetch request body by URL (url).
 
 	PRE:
-		* A correctly formatted URL is supplied
+		A correctly formatted URL is supplied
 
 	SIDE EFFECTS:
-		* Fetches data from Web API using SimpleHTML request
+		Fetches data from Web API using SimpleHTML request
 
 	POST:
-		* Returns request body in form of a IO String
-
-	EXAMPLES:
-		---
+		Returns request body in form of a IO String
 
 -}
 get :: String -> IO String
@@ -113,10 +110,10 @@ get url = do
 		Concatenate ids as comma separated string.
 
 	PRE:
-		* TRUE
+		TRUE
 
 	POST:
-		* Returns ID:s formatted as comma separated string.
+		Returns ID:s formatted as comma separated string.
 
 	EXAMPLES:
 		concatIDs [123456789, 2345678, 34567890] == "123456789,2345678,34567890"
@@ -134,13 +131,10 @@ concatIDs (x:xs) = (show x) ++ ',' : concatIDs xs
 		Fetch player steamid using vanity name (custom name/url).
 
 	PRE:
-		* TRUE
+		TRUE
 
 	POST:
-		* Returns request body in form of a IO String containing JSON-formatted/serialized data
-
-	EXAMPLES:
-		--
+		Returns request body in form of a IO String containing JSON-formatted/serialized data
 
 -}
 getSteamIdFromVanityURL :: String -> IO String
@@ -154,14 +148,11 @@ getSteamIdFromVanityURL vanity = get (apiBase ++ "/ISteamUser/ResolveVanityURL/v
 		Fetch player profile summaries.
 
 	PRE:
-		* steamIDs contain at least one ID
-		* steamIDs contain at most 100 IDs
+		steamIDs contain at least one ID
+		steamIDs contain at most 100 IDs
 
 	POST:
-		* Returns request body in form of a IO String containing JSON-formatted/serialized data
-
-	EXAMPLES:
-		---
+		Returns request body in form of a IO String containing JSON-formatted/serialized data-
 
 -}
 getPlayerSummaries :: [SteamID] -> IO String
@@ -174,13 +165,10 @@ getPlayerSummaries ids = get (apiBase ++ "/ISteamUser/GetPlayerSummaries/v0002/?
 		Fetch list of friends/connections to steam user with steamID.
 
 	PRE:
-		* TRUE
+		TRUE
 
 	POST:
-		* Returns request body in form of a IO String containing JSON-formatted/serialized data
-
-	EXAMPLES:
-		---
+		Returns request body in form of a IO String containing JSON-formatted/serialized data-
 
 -}
 getFriendList :: SteamID -> IO String
@@ -193,13 +181,10 @@ getFriendList id = get (apiBase ++ "/ISteamUser/GetFriendList/v0001/?key=" ++ ke
 		Fetch list of games owned by steam user with steamID.
 
 	PRE:
-		* TRUE
+		TRUE
 
 	POST:
-		* Returns request body in form of a IO String containing JSON-formatted/serialized data
-
-	EXAMPLES:
-		---
+		Returns request body in form of a IO String containing JSON-formatted/serialized data-
 
 -}
 getOwnedGames :: SteamID -> IO String
@@ -212,13 +197,10 @@ getOwnedGames id = get (apiBase ++ "/IPlayerService/GetOwnedGames/v0001/?key=" +
 		Fetch list of achievements and their status from app appID for steam user with steamID.
 
 	PRE:
-		* TRUE
+		TRUE
 
 	POST:
-		* Returns request body in form of a IO String containing JSON-formatted/serialized data
-
-	EXAMPLES:
-		---
+		Returns request body in form of a IO String containing JSON-formatted/serialized data-
 
 -}
 getPlayerAchievements :: SteamID -> AppID -> IO String
@@ -231,13 +213,10 @@ getPlayerAchievements id appid = get (apiBase ++ "/ISteamUserStats/GetPlayerAchi
 		Fetch user statistics for app with appID for steam user with steamID.
 
 	PRE:
-		* TRUE
+		TRUE
 
 	POST:
-		* Returns request body in form of a IO String containing JSON-formatted/serialized data
-
-	EXAMPLES:
-		---
+		Returns request body in form of a IO String containing JSON-formatted/serialized data-
 
 -}
 getUserStatsForGame :: SteamID -> AppID -> IO String
@@ -250,13 +229,10 @@ getUserStatsForGame id appid = get (apiBase ++ "/ISteamUserStats/GetUserStatsFor
 		Fetch games played in the last two weeks for steam user with steamID.
 
 	PRE:
-		* TRUE
+		TRUE
 
 	POST:
-		* Returns request body in form of a IO String containing JSON-formatted/serialized data
-
-	EXAMPLES:
-		---
+		Returns request body in form of a IO String containing JSON-formatted/serialized data-
 
 -}
 getRecentlyPlayedGames :: SteamID -> IO String
@@ -269,14 +245,11 @@ getRecentlyPlayedGames id = get (apiBase ++ "/IPlayerService/GetRecentlyPlayedGa
 		Fetch ban status for steamIDs.
 
 	PRE:
-		* steamIDs contain at least one ID
-		* steamIDs contain at most 100 IDs
+		steamIDs contain at least one ID
+		steamIDs contain at most 100 IDs
 
 	POST:
-		* Returns request body in form of a IO String containing JSON-formatted/serialized data
-
-	EXAMPLES:
-		---
+		Returns request body in form of a IO String containing JSON-formatted/serialized data-
 
 -}
 getPlayerBans :: [SteamID] -> IO String
@@ -289,13 +262,10 @@ getPlayerBans ids = get (apiBase ++ "/ISteamUser/GetPlayerBans/v1/?key=" ++ key 
 		Fetch list containing all apps available on steam.
 
 	PRE:
-		* TRUE
+		TRUE
 
 	POST:
-		* Returns request body in form of a IO String containing JSON-formatted/serialized data
-
-	EXAMPLES:
-		---
+		Returns request body in form of a IO String containing JSON-formatted/serialized data-
 
 -}
 getSteamApps :: IO String
@@ -308,13 +278,10 @@ getSteamApps = get (apiBase ++ "/ISteamApps/GetAppList/v2")
 		Fetch info about game with app id appID.
 
 	PRE:
-		* TRUE
+		TRUE
 
 	POST:
-		* Returns request body in form of a IO String containing JSON-formatted/serialized data
-
-	EXAMPLES:
-		---
+		Returns request body in form of a IO String containing JSON-formatted/serialized data-
 
 -}
 getAppSchema :: AppID -> IO String
@@ -325,5 +292,9 @@ getAppSchema appid = get (apiBase ++ "/ISteamUserStats/GetSchemaForGame/v2/?key=
 
 -- Test 1; Test concatenation of ID:s used for calls with multiple ID:s in same call
 test1 = TestCase $ assertEqual "Concatenate integer list" "123456789,2345678,34567890" (concatIDs [123456789, 2345678, 34567890])
+-- Test 2; Test concatenation of ID:s used for calls with single ID
+test2 = TestCase $ assertEqual "Concatenate single entry integer list" "123456789" (concatIDs [123456789])
+-- Test 3; Test concatenation of ID:s used for calls with no ID:s
+test3 = TestCase $ assertEqual "Concatenate empty (integer) list" "" (concatIDs [])
 
-steamRequestsTests = TestList $ [test1]
+steamRequestsTests = TestList [test1,test2,test3]

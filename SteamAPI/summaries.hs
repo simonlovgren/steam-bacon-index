@@ -40,7 +40,7 @@ data ResponseWrapper =
         * Represents wrapper around player list (sent by steam)
 
     REPRESENTATION INVARIANT:
-        TRUE
+        * TRUE
 -}
 data Players =
     Players {
@@ -52,7 +52,7 @@ data Players =
         * Represents summary of a Steam player profile
 
     REPRESENTATION INVARIANT:
-        TRUE
+        * TRUE
 -}
 data Player = 
 	Player {
@@ -148,14 +148,14 @@ instance JSON Player where
         TRUE
 
     POST:
-        * ???
+        N/A
 
     NOTE:
-        * This function was created according to the stackexchange post used
-          to understand the implementation of the JSON library (see note at top
-          of document). Unfortunately I'm not fully aware of why there's a need
-          to flip the valFromObj and its two inputs, only that it's needed for
-          chaining using the applicative library.
+        This function was created according to the stackexchange post used
+        to understand the implementation of the JSON library (see note at top
+        of document). Unfortunately I'm not fully aware of why there's a need
+        to flip the valFromObj and its two inputs, only that it's needed for
+        chaining using the applicative library.
 -}
 (.:) :: (JSON a) => JSObject JSValue -> String -> Result a
 (.:) = flip valFromObj
@@ -170,7 +170,7 @@ instance JSON Player where
         TRUE
 
     POST:
-        * Returns list of players without wrappers
+        Returns list of players without wrappers
 
     EXAMPLES:
         -- Data for testing
@@ -196,10 +196,10 @@ extractList (Error _)  = []
         A maximum of 100 ID:s in supplied list
 
     POST:
-        * Returns True if all exist, False otherwise
+        Returns True if all exist, False otherwise
 
     SIDEEFFECTS:
-        * Uses SteamAPI.Requests module to fetch external data 
+        Uses SteamAPI.Requests module to fetch external data 
 
     EXAMPLES:
         playersExist [9999999,123456789] = False
@@ -234,7 +234,7 @@ playersExist ids = do
         TRUE
 
     POST:
-        * Returns list of KeyVal type with player data, empty list on error or no result
+        Returns list of KeyVal type with player data, empty list on error or no result
 
     EXAMPLES:
         -- example data
@@ -258,13 +258,13 @@ playerList (Error _) = []
     orderedNames result list
 
     PURPOSE:
-        * Return player personanames for supplied ID:s in same order as ID:s 
+        Return player personanames for supplied ID:s in same order as ID:s 
 
     PRE:
-        * True
+        True
 
     POST:
-        * Returns list of Maybe String. Just "personaname" if personaname was found, otherwise Nothing
+        Returns list of Maybe String. Just "personaname" if personaname was found, otherwise Nothing
 
     EXAMPLES:
         -- example data
@@ -286,13 +286,13 @@ orderedNames l@(Ok _) ids =
             orderedNames' ids summaries
 
             PURPOSE:
-                * Return player personanames for supplied ID:s in same order as ID:s 
+                Return player personanames for supplied ID:s in same order as ID:s 
 
             PRE:
-                * True
+                True
 
             POST:
-                * Returns list of Maybe String. Just "personaname" if personaname was found, otherwise Nothing
+                Returns list of Maybe String. Just "personaname" if personaname was found, otherwise Nothing
 
             EXAMPLES:
                 -- example data
@@ -321,13 +321,13 @@ orderedNames (Error _) _ = []
     nameOfPlayer id keyval
 
     PURPOSE:
-        * Return personaname of player with Steam ID
+        Return personaname of player with Steam ID
 
     PRE:
-        * True
+        True
 
     POST:
-        * Returns Maybe String. Just "personaname" if persona name linked to id was found in supplied keyval set, otherwise Nothing
+        Returns Maybe String. Just "personaname" if persona name linked to id was found in supplied keyval set, otherwise Nothing
 
     EXAMPLES:
         -- example data
@@ -347,18 +347,18 @@ nameOfPlayer id [] = Nothing
     getPlayerList list
 
     PURPOSE:
-        * Return player summaries for supplied ID:s 
+        Return player summaries for supplied ID:s 
 
     PRE:
-        * A minimum of 1 SteamID in list
-        * A maximum of 100 SteamID:s in list
+        A minimum of 1 SteamID in list
+        A maximum of 100 SteamID:s in list
 
     POST:
-        * Returns IO list of KeyVal-lists containing steam player summaries
+        Returns IO list of KeyVal-lists containing steam player summaries
 
     SIDEEFFECTS:
-        * Uses SteamAPI.Requests module to fetch external data
-        * Steam accounts with privacy other than public will not be returned in list
+        Uses SteamAPI.Requests module to fetch external data
+        Steam accounts with privacy other than public will not be returned in list
 
     EXAMPLES:
         getPlayerList [76561197979971024] = IO [[KVInt "steamid" 76561197979971024,KVStr "personaname" "Maustronaut",KVInt "lastlogoff" 1425457171,KVStr "profileurl" "http://steamcommunity.com/profiles/76561197979971024/",KVStr "avatar" "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fb/fb987dbeea879f2bfb733fc2ae218c2c9d9bc0c8.jpg",KVStr "avatarmedium" "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fb/fb987dbeea879f2bfb733fc2ae218c2c9d9bc0c8_medium.jpg",KVStr "avatarfull" "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fb/fb987dbeea879f2bfb733fc2ae218c2c9d9bc0c8_full.jpg"]]
@@ -387,18 +387,18 @@ getPlayerList ids = do
     getOrderedNames list
 
     PURPOSE:
-        * Return player personanames for supplied ID:s in same order as ID:s 
+        Return player personanames for supplied ID:s in same order as ID:s 
 
     PRE:
-        * A minimum of 1 SteamID in list
-        * A maximum of 100 SteamID:s in list
+        A minimum of 1 SteamID in list
+        A maximum of 100 SteamID:s in list
 
     POST:
-        * Returns IO list of Maybe String. Just "personaname" if personaname was found, otherwise Nothing
+        Returns IO list of Maybe String. Just "personaname" if personaname was found, otherwise Nothing
 
     SIDEEFFECTS:
-        * Uses SteamAPI.Requests module to fetch external data
-        * Steam accounts with privacy other than public will not be returned in list
+        Uses SteamAPI.Requests module to fetch external data
+        Steam accounts with privacy other than public will not be returned in list
 
     EXAMPLES:
         playerNamesOrdered [76561198028357851,76561197979971024,76561197999847293] = IO [Just "Erikun", Just "Maustronaut", Just "Avari"]
@@ -438,10 +438,10 @@ getOrderedNames ids = do
         Return JSON formatted data for test purposes
 
     PRE:
-        * TRUE
+        TRUE
 
     POST:
-        * Returns test data in form of a IO String in same form as a real API call using ID: 76561197979971024
+        Returns test data in form of a IO String in same form as a real API call using ID: 76561197979971024
 -}
 testJSONData :: String
 testJSONData = "{\n\t\"response\": {\n\t\t\"players\": [\n\t\t\t{\n\t\t\t\t\"steamid\": \"76561197979971024\",\n\t\t\t\t\"communityvisibilitystate\": 3,\n\t\t\t\t\"profilestate\": 1,\n\t\t\t\t\"personaname\": \"Maustronaut\",\n\t\t\t\t\"lastlogoff\": 1425457171,\n\t\t\t\t\"profileurl\": \"http://steamcommunity.com/profiles/76561197979971024/\",\n\t\t\t\t\"avatar\": \"https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fb/fb987dbeea879f2bfb733fc2ae218c2c9d9bc0c8.jpg\",\n\t\t\t\t\"avatarmedium\": \"https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fb/fb987dbeea879f2bfb733fc2ae218c2c9d9bc0c8_medium.jpg\",\n\t\t\t\t\"avatarfull\": \"https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fb/fb987dbeea879f2bfb733fc2ae218c2c9d9bc0c8_full.jpg\",\n\t\t\t\t\"personastate\": 0,\n\t\t\t\t\"realname\": \"Simon Lövgren\",\n\t\t\t\t\"primaryclanid\": \"103582791431467770\",\n\t\t\t\t\"timecreated\": 1135541046,\n\t\t\t\t\"personastateflags\": 0,\n\t\t\t\t\"loccountrycode\": \"SE\",\n\t\t\t\t\"locstatecode\": \"21\",\n\t\t\t\t\"loccityid\": 43767\n\t\t\t},\n\t\t\t\t{\n\t\t\t\t\"steamid\": \"76561197999847293\",\n\t\t\t\t\"communityvisibilitystate\": 3,\n\t\t\t\t\"profilestate\": 1,\n\t\t\t\t\"personaname\": \"Avari\",\n\t\t\t\t\"lastlogoff\": 1425417881,\n\t\t\t\t\"profileurl\": \"http://steamcommunity.com/profiles/76561197999847293/\",\n\t\t\t\t\"avatar\": \"https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/9e/9e3cc9976bbab0365d6d093ee9c9d8c1db041457.jpg\",\n\t\t\t\t\"avatarmedium\": \"https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/9e/9e3cc9976bbab0365d6d093ee9c9d8c1db041457_medium.jpg\",\n\t\t\t\t\"avatarfull\": \"https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/9e/9e3cc9976bbab0365d6d093ee9c9d8c1db041457_full.jpg\",\n\t\t\t\t\"personastate\": 1,\n\t\t\t\t\"primaryclanid\": \"103582791430380703\",\n\t\t\t\t\"timecreated\": 1215871590,\n\t\t\t\t\"personastateflags\": 0,\n\t\t\t\t\"loccountrycode\": \"SE\",\n\t\t\t\t\"locstatecode\": \"21\",\n\t\t\t\t\"loccityid\": 43767\n\t\t\t}\n\t\t]\n\t\t\n\t}\n}"
@@ -452,10 +452,10 @@ testJSONData = "{\n\t\"response\": {\n\t\t\"players\": [\n\t\t\t{\n\t\t\t\t\"ste
         Return Result wrapped parsed test data
 
     PRE:
-        * TRUE
+        TRUE
 
     POST:
-        * Returns test data as the parsing would have created, in form of Result ResponseWrapper
+        Returns test data as the parsing would have created, in form of Result ResponseWrapper
 -}
 testParsedData :: Result ResponseWrapper
 testParsedData = (Ok (ResponseWrapper {response = (Players {players = [Player {steamid = "76561197979971024", personaname = "Maustronaut", lastlogoff = 1425457171, profileurl = "http://steamcommunity.com/profiles/76561197979971024/", avatar = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fb/fb987dbeea879f2bfb733fc2ae218c2c9d9bc0c8.jpg", avatarmedium = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fb/fb987dbeea879f2bfb733fc2ae218c2c9d9bc0c8_medium.jpg", avatarfull = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fb/fb987dbeea879f2bfb733fc2ae218c2c9d9bc0c8_full.jpg"},Player {steamid = "76561197999847293", personaname = "Avari", lastlogoff = 1425417881, profileurl = "http://steamcommunity.com/profiles/76561197999847293/", avatar = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/9e/9e3cc9976bbab0365d6d093ee9c9d8c1db041457.jpg", avatarmedium = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/9e/9e3cc9976bbab0365d6d093ee9c9d8c1db041457_medium.jpg", avatarfull = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/9e/9e3cc9976bbab0365d6d093ee9c9d8c1db041457_full.jpg"}]})}))
@@ -466,10 +466,10 @@ testParsedData = (Ok (ResponseWrapper {response = (Players {players = [Player {s
         Return player summaries for testing purposes
 
     PRE:
-        * TRUE
+        TRUE
 
     POST:
-        * Returns test data as the playerList would have returned it, as [[KeyVal]]
+        Returns test data as the playerList would have returned it, as [[KeyVal]]
 -}
 testKeyValData :: [[KeyVal]]
 testKeyValData = [[KVInt "steamid" 76561197979971024,KVStr "personaname" "Maustronaut",KVInt "lastlogoff" 1425457171,KVStr "profileurl" "http://steamcommunity.com/profiles/76561197979971024/",KVStr "avatar" "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fb/fb987dbeea879f2bfb733fc2ae218c2c9d9bc0c8.jpg",KVStr "avatarmedium" "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fb/fb987dbeea879f2bfb733fc2ae218c2c9d9bc0c8_medium.jpg",KVStr "avatarfull" "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fb/fb987dbeea879f2bfb733fc2ae218c2c9d9bc0c8_full.jpg"],[KVInt "steamid" 76561197999847293,KVStr "personaname" "Avari",KVInt "lastlogoff" 1425417881,KVStr "profileurl" "http://steamcommunity.com/profiles/76561197999847293/",KVStr "avatar" "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/9e/9e3cc9976bbab0365d6d093ee9c9d8c1db041457.jpg", KVStr "avatarmedium" "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/9e/9e3cc9976bbab0365d6d093ee9c9d8c1db041457_medium.jpg",KVStr "avatarfull" "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/9e/9e3cc9976bbab0365d6d093ee9c9d8c1db041457_full.jpg"]]

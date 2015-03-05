@@ -147,14 +147,14 @@ instance JSON Friend where
         TRUE
 
     POST:
-        * ???
+        N/A
 
     NOTE:
-        * This function was created according to the stackexchange post used
-          to understand the implementation of the JSON library (see note at top
-          of document). Unfortunately I'm not fully aware of why there's a need
-          to flip the valFromObj and its two inputs, only that it's needed for
-          chaining using the applicative library.
+        This function was created according to the stackexchange post used
+        to understand the implementation of the JSON library (see note at top
+        of document). Unfortunately I'm not fully aware of why there's a need
+        to flip the valFromObj and its two inputs, only that it's needed for
+        chaining using the applicative library.
 -}
 (.:) :: (JSON a) => JSObject JSValue -> String -> Result a
 (.:) = flip valFromObj
@@ -170,7 +170,7 @@ instance JSON Friend where
         TRUE
 
     POST:
-        * Returns list of integers with steam ID:s of friends in friendslist 
+        Returns list of integers with steam ID:s of friends in friendslist 
 
     EXAMPLES:
         makeListOfIDs (Error _) = []
@@ -191,7 +191,7 @@ makeListOfIDs (Error _) = []
         TRUE
 
     POST:
-        * Returns list of KeyVal-lists with steamid, relationship and friend_since as data. If error or nothing found- returns empty list.
+        Returns list of KeyVal-lists with steamid, relationship and friend_since as data. If error or nothing found- returns empty list.
 
     EXAMPLES:
         extractFriends (Error _) = []
@@ -210,7 +210,7 @@ extractFriends (Ok x) =
                 TRUE
 
             POST:
-                * Returns list of KeyVal-lists with steamid, relationship and friend_since as data. If error or nothing found- returns empty list.
+                Returns list of KeyVal-lists with steamid, relationship and friend_since as data. If error or nothing found- returns empty list.
 
             EXAMPLES:
                 extractFriends' [] = []
@@ -228,13 +228,13 @@ extractFriends (Error _) = []
     getIDs id
 
     PURPOSE:
-        Return list of steam id:s of friends to user of supplied id
+        Fetch list of steam id:s of friends to user of supplied id
 
     PRE:
         TRUE
 
     POST:
-        * Returns list of integers with steam ID:s of friends in friendslist
+        Returns list of integers with steam ID:s of friends in friendslist
 
     EXAMPLES:
         getIDList 76561198028357851 = IO [76561197979971024,76561197989194839,76561198000124224,76561198043343260]
@@ -251,13 +251,13 @@ getIDList id = do
     getRawList id
 
     PURPOSE:
-        Return list of friends as list of KeyVal-lists
+        Fetch list of friends as list of KeyVal-lists
 
     PRE:
         TRUE
 
     POST:
-        * Returns IO [[KeyVal]], if something went wrong returns []
+        Returns IO [[KeyVal]], if something went wrong returns []
 
     EXAMPLES:
        getRawList 76561198028357851 = IO [[KVInt "steamid" 76561197979971024,KVStr "relationship" "friend",KVInt "friend_since" 1424960766],[KVInt "steamid" 76561197989194839,KVStr "relationship" "friend",KVInt "friend_since" 1303555871],[KVInt "steamid" 76561198000124224,KVStr "relationship" "friend",KVInt "friend_since" 1336242822],[KVInt "steamid" 76561198043343260,KVStr "relationship" "friend",KVInt "friend_since" 1419003931]]
@@ -279,13 +279,13 @@ getRawList id = do
     testJSONData
 
     PURPOSE:
-        Return JSON formatted data for test purposes
+        Fetch JSON formatted data for test purposes
 
     PRE:
-        * TRUE
+        TRUE
 
     POST:
-        * Returns JSON data in form of a IO String in same form as a real API call using ID: 76561197979971024, though limited to 4 friends for testing purposes
+        Returns JSON data in form of a IO String in same form as a real API call using ID: 76561197979971024, though limited to 4 friends for testing purposes
 -}
 testJSONData :: String
 testJSONData = "{\n\t\"friendslist\": {\n\t\t\"friends\": [\n\t\t\t{\n\t\t\t\t\"steamid\": \"76561197963805864\",\n\t\t\t\t\"relationship\": \"friend\",\n\t\t\t\t\"friend_since\": 0\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"steamid\": \"76561197963864986\",\n\t\t\t\t\"relationship\": \"friend\",\n\t\t\t\t\"friend_since\": 0\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"steamid\": \"76561197964446578\",\n\t\t\t\t\"relationship\": \"friend\",\n\t\t\t\t\"friend_since\": 1288114261\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"steamid\": \"76561197965528292\",\n\t\t\t\t\"relationship\": \"friend\",\n\t\t\t\t\"friend_since\": 1223307109}\n\t\t]\n\t\t\n\t}\n}"
@@ -293,13 +293,13 @@ testJSONData = "{\n\t\"friendslist\": {\n\t\t\"friends\": [\n\t\t\t{\n\t\t\t\t\"
     testData
 
     PURPOSE:
-        Return Result wrapped parsed test data
+        Fetch Result wrapped parsed test data
 
     PRE:
-        * TRUE
+        TRUE
 
     POST:
-        * Returns parsed test data as the parsing would have created, in form of Result FriendsList
+        Returns parsed test data as the parsing would have created, in form of Result FriendsList
 -}
 testParsedData :: Result FriendsList
 testParsedData = (Ok (FriendsList {friendslist = (Friends {friends = [Friend {steamid = "76561197963805864", relationship = "friend", friend_since = 0}, Friend {steamid = "76561197963864986", relationship = "friend", friend_since = 0}, Friend {steamid = "76561197964446578", relationship = "friend", friend_since = 1288114261}, Friend {steamid = "76561197965528292", relationship = "friend", friend_since = 1223307109}]})}))

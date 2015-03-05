@@ -4,13 +4,32 @@
     Simon Lövgren
     Erik Melander
     Fredrik Svensson
+
+	
+	NOTE:
+	=================================================================================
+	All test can be run from this file. Simply call the function "runAllTestsProject".
+	Tests from each module will be run and in between each test result, a heading will
+	be printed describing what set of test cases will be run.
+
+	EXAMPLE IDs:
+	===============
+	The following IDs can be used for testing the program:
+		ID 1: 76561198028357851
+		ID 2: 76561197999847293
+	
+	This should result in the following (final) output:
+		"From Erikun to Maustronaut to Avari"
+
 -}
 
 import BreadthFirstSearch
 import FifoQueue
 import IDSearchTree
 import Test.HUnit
-import Steam
+import SteamAPI.Requests (steamRequestsTests)
+import SteamAPI.Friends (steamFriendsTests)
+import SteamAPI.Summaries (steamSummariesTests)
 import KeyVal
 {-
 main SteamID1 SteamID2
@@ -37,7 +56,7 @@ main = do
 	 else do 
 		putStrLn "Expected input; Two non identical 17 Char long numerical strings"
 	 		
-	 return ()
+	return ()
 
 {-
 isReadableString s
@@ -84,7 +103,13 @@ isSteamID id = (length id) >= 17 && (isReadableString id)
 
 
 
-
+{-
+	runAllTestsProject
+	
+	PURPOSE	: Run all tests in all files of the program
+	PRE 	: True
+	POST 	: True
+-}
 runAllTestsProject = do
     putStrLn ("Running all tests that do not require access to remote Steam data")
     putStrLn ("Running Queue tests")
@@ -98,8 +123,14 @@ runAllTestsProject = do
     putStrLn ("Running KeyVal tests")
     runTestTT tests
     putStrLn ("Running Steam API tests")
-    putStrLn ("Running Request tests")
-    return()   
+    putStrLn ("Running Steam Request tests")
+    runTestTT steamRequestsTests
+    putStrLn ("Running Steam Friends tests")
+    runTestTT steamFriendsTests
+    putStrLn ("Running Steam Summaries tests")
+    runTestTT steamSummariesTests
+
+    return ()   
 
 
 --Test 1; isReadableString with valid input.

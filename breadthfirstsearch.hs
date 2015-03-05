@@ -94,7 +94,7 @@ EXAMPLES 	: N/A
 successRoute :: [Integer] -> IO ()
 successRoute idList = do
     names <- Steam.playerNamesOrdered idList
-    print names
+    -- print names
     putStrLn $ makeStringOfRoute names
   
 {-
