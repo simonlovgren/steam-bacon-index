@@ -10,6 +10,8 @@ import BreadthFirstSearch
 import FifoQueue
 import IDSearchTree
 import Test.HUnit
+import Steam
+import KeyVal
 {-
 main SteamID1 SteamID2
 PURPOSE		: Request inputs and check validity before sending to breadthFirstSearch.
@@ -78,6 +80,28 @@ EXAMPLES 	: isSteamID "12345678910111213" = True
 isSteamID :: String -> Bool 
 isSteamID id = (length id) >= 17 && (isReadableString id) 
 
+
+
+
+
+
+
+
+runAllTestsProject = do
+    putStrLn ("Running all tests that do not require access to remote Steam data")
+    putStrLn ("Running Queue tests")
+    runQueueTests
+    putStrLn ("Running IDSearchtree tests")
+    runTestTT iDSTtests
+    putStrLn ("Running Breadth Width First tests")
+    runBfsTests
+    putStrLn ("Running Main tests")
+    runTestTT mainTests
+    putStrLn ("Running KeyVal tests")
+    runTestTT tests
+    putStrLn ("Running Steam API tests")
+    putStrLn ("Running Request tests")
+    return()   
 
 
 --Test 1; isReadableString with valid input.
