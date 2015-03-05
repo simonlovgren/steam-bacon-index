@@ -17,7 +17,7 @@ data KeyVal = KVStr String String | KVInt String Integer
 		deriving (Eq, Show)
 {-
 findKVString list key
-PURPOSE		: To find the element in the list whos key matches the supplied key.
+PURPOSE		: Check for key in list, if found return corresponding value.
 PRE 		: A list of KeyVal and a key. No Key can appear more than once in the list.
 POST 		: A Maybe String if the supplied key matches any key in the list.
 EXAMPLES 	: findKVString [KVStr "SteamName" "Name"] "SteamName" = Just Name
@@ -30,7 +30,7 @@ findKVString ((KVInt k s):xs) se = findKVString xs se
 
 {-
 findKVInt list key
-PURPOSE		: To find the element in the list whos key matches the supplied key. 
+PURPOSE		: Check for key in list, if found return corresponding value. 
 PRE 		: A list of KeyVal and a key. No Key can appear more than once in the list.
 POST 		: A Maybe Integer if the supplied key matches any keys in the list.
 EXAMPLES 	: findKVString [KVStr "SteamIDInt" 412964] "SteamIDInt" = Just 412964
