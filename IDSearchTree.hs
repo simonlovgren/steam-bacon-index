@@ -18,10 +18,10 @@ REPRESENTATION INVARIANT: Every element in the left sub-tree is smaller than the
 data Tree a = Empty | Branch a (Tree a) (Tree a)
 	deriving (Show, Eq)
 {-
-searchTuple (Tree Integer) Integer (Tree Integer, Bool)
-PURPOSE		: To create a tuple with a binary tree of integers and a bool if provided integer was already in the searchtree.
-PRE 		: A Tree and a ID (17 digit Integer)
-POST 		: A Tree with the inserted ID
+searchTuple t b 
+PURPOSE		: Check if b is already in tree, or if not insert it.
+PRE 		: True
+POST 		: Returns tuple with True and t if b found in t, or False and t with b inserted if not found.
 EXAMPLES 	: searchTuple (Branch 10 Empty Empty) 9 = (Branch 10 (Branch 9 Empty Empty) Empty,False)
 
 -}
@@ -30,60 +30,60 @@ searchTuple Empty b = ((isInIDSearchTree Empty b),(searchIDTree Empty b))
 searchTuple (Branch a left right) b = ((isInIDSearchTree (Branch a left right) b ),(searchIDTree (Branch a left right) b))
 
 {-
-searchIDTree (Tree Integer) Integer Bool
-PURPOSE		: To return a True is Integer is found in the tree and a False if integer is not found in the tree.
-PRE 		: A Tree and a ID
-POST 		: A boolean
+searchIDTree t b
+PURPOSE		: Check if b in t.
+PRE 		: True
+POST 		: Return a True is b is found in t and a False if not.
 EXAMPLES 	: searchIDTree (Branch 10 (Branch 9 Empty Empty) (Branch 12 Empty Empty)) 12 = True	
 			  searchIDTree (Branch 10 (Branch 9 Empty Empty) (Branch 12 Empty Empty)) 11 = False		
 -}
 searchIDTree :: Tree Integer -> Integer -> Bool
 searchIDTree Empty b = False 
 searchIDTree (Branch a left right) b
-					| b > a  = (searchIDTree right b)
-					| b < a  = (searchIDTree left  b)
-					| b == a = True
+	| b > a  = (searchIDTree right b)
+	| b < a  = (searchIDTree left  b)
+	| b == a = True
 
 {-
-isInIDSearchTree (Tree Integer) Integer (Tree Integer)
-PURPOSE		: To check if an integer is in a tree or not, if it is, return the tree, else return a tree with integer inserted
-PRE 		: A Tree and a ID
-POST 		: A Tree 
+isInIDSearchTree t b 
+PURPOSE		: To check if an b is in a t or not, if it is not insert b into t.
+PRE 		: True
+POST 		: Returns a t with b inserted if b not found in t, else return t. 
 EXAMPLES 	: isInIDSearchTree (Branch 10 Empty Empty) 9 = Branch 10 (Branch 9 Empty Empty) Empty
 			  isInIDSearchTree (Branch 10 Empty Empty) 10 = Branch 10 Empty Empty
 -}
 isInIDSearchTree :: Tree Integer -> Integer -> Tree Integer
 isInIDSearchTree Empty b = (Branch b Empty Empty)
 isInIDSearchTree (Branch a left right) b 
-					| (isInIDSearchTreeAux (Branch a left right) b) == True  = (insertIDSearchTree (Branch a left right) b) 
-					| (isInIDSearchTreeAux (Branch a left right) b) == False = (Branch a left right)
+	| (isInIDSearchTreeAux (Branch a left right) b) == True  = (insertIDSearchTree (Branch a left right) b) 
+	| (isInIDSearchTreeAux (Branch a left right) b) == False = (Branch a left right)
 
 {-
-isInIDSearchTreeAux (Tree Integer) Integer Bool
-PURPOSE		: Examine if a integer is in a tree or not, returns a Boolean 
-PRE 		: A Tree and a ID
-POST 		: A Bool
+isInIDSearchTreeAux r b 
+PURPOSE		: Check if b is in a t 
+PRE 		: True
+POST 		: Returns False if b in t.
 EXAMPLES 	: isInIDSearchTreeAux (Branch 10 (Branch 9 Empty Empty) Empty) 10 = False
 -}
 isInIDSearchTreeAux :: Tree Integer -> Integer -> Bool
 isInIDSearchTreeAux Empty a = True 
 isInIDSearchTreeAux (Branch a left right) b 
-					| b == a = False
-					| b > a  = (isInIDSearchTreeAux right b)
-					| b < a  = (isInIDSearchTreeAux left b)
+	| b == a = False
+	| b > a  = (isInIDSearchTreeAux right b)
+	| b < a  = (isInIDSearchTreeAux left b)
 
 {-
-insertIDSearchTree (Tree Integer) Integer (Tree Integer)
-PURPOSE		: To insert a Integer to a binary tree.
-PRE 		: A Tree and a ID
-POST 		: A Tree with ID inserted.
+insertIDSearchTree t b 
+PURPOSE		: To insert b to t.
+PRE 		: True
+POST 		: Returns t with b inserted.
 EXAMPLES 	: insertIDSearchTree (Branch 10 Empty Empty) 1 = (Branch 10 (Branch 1 Empty Empty) Empty)		
 -}
 insertIDSearchTree :: Tree Integer -> Integer -> Tree Integer
 insertIDSearchTree Empty b = (Branch b Empty Empty) 
 insertIDSearchTree (Branch a left right) b 
-					| b > a  = (Branch a left (insertIDSearchTree right b))
-					| b < a  = (Branch a (insertIDSearchTree left b) right)
+	| b > a  = (Branch a left (insertIDSearchTree right b))
+	| b < a  = (Branch a (insertIDSearchTree left b) right)
 
 --Test 1; searchTuple, adding value that already excists i the tree.
 iDSTtest1 = TestCase (assertEqual "for (searchTuple ((Branch 10 (Branch 9 Empty Empty) (Branch 11 Empty (Branch 12 Empty Empty)))) 10)," (Branch 10 (Branch 9 Empty Empty) (Branch 11 Empty (Branch 12 Empty Empty)),True) (searchTuple (Branch 10 (Branch 9 Empty Empty) (Branch 11 Empty (Branch 12 Empty Empty))) 10))
