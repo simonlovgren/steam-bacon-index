@@ -3,12 +3,10 @@
 
 Install using:
 ```
-#!
 cabal install json
 ```
 Or for global installation:
 ```
-#!
 cabal install json --global
 ```
 
@@ -16,8 +14,7 @@ cabal install json --global
 **Steam API**
 
 Import- and use steam API from file *steam* in root folder:
-```
-#!haskell
+```haskell
 import qualified Steam
 
 -- get list of friends IDs:
@@ -34,8 +31,7 @@ Steam.playerSummaries [76561197979971024]	-- Retreive player summaries as [[KeyV
 ```
 
 ** EXAMPLE: Retreiving personaname from [[KeyVal]] list** using Steam.playerSummaries and KeyVal-module:
-```
-#!haskell
+```haskell
 
 -- Retreive friends and unwrap IO Monad (to use as an example list)
 friends <- Steam.friendsIDs 76561197979971024
