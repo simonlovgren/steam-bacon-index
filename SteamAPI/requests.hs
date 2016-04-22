@@ -10,9 +10,6 @@
         * Calls to the WebAPI is made using Network.HTTP
         * General description of the package was used to understand implementation
         * Key can be found/created at: http://steamcommunity.com/dev/apikey
-
-		* KEY (Simon/slovgren.com)	:: F54C9824025C1E667C45B6887D7765B0
-		* SteamID (Simon/Maustronaut)			:: 76561197979971024
 -}
 
 module SteamAPI.Requests 
@@ -66,7 +63,7 @@ type AppID = Integer
 	POST:
 		Return the API key as a string
 -}
-key 	= "F54C9824025C1E667C45B6887D7765B0" -- Steam API Key (Simon/slovgren.com), can be found/created @ http://steamcommunity.com/dev/apikey
+key 	= "your_steam_api_key" -- Steam API Key, can be found/created @ http://steamcommunity.com/dev/apikey
 {-
 	apiBase
 
